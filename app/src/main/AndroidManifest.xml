@@ -8,7 +8,7 @@
         android:allowBackup="true"
         android:label="Portal Data Siswa"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@android:style/Theme.Material.NoTitleBar.Fullscreen"
         android:usesCleartextTraffic="true">
 
         <activity
