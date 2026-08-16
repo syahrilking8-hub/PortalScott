@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:label="Portal Data Siswa"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
+        android:theme="@android:style/Theme.Holo.NoActionBar"
         android:usesCleartextTraffic="true">
 
         <activity
