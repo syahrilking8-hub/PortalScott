@@ -7,6 +7,10 @@ android {
     namespace 'com.app.portal'
     compileSdk 34
 
+    buildFeatures {
+        viewBinding true
+    }
+    
     defaultConfig {
         applicationId "com.app.portal"
         minSdk 24
