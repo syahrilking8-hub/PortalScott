@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.app.portal.app-merged_res-8:/layout_activity_login.xml.flat",
+        "source": "com.app.portal.app-main-10:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.app.portal.app-merged_res-8:/layout_activity_register.xml.flat",
+        "source": "com.app.portal.app-main-10:/layout/activity_register.xml"
+    }
+]

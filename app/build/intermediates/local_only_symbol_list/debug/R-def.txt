@@ -1,0 +1,26 @@
+R_DEF: Internal format may change without notice
+local
+id btnCancel
+id btnLogin
+id btnRegister
+id btnResetLink
+id cardLogin
+id cardRegister
+id dotStatus
+id etBaseUrl
+id etPassword
+id etRegPassword
+id etRegUsername
+id etUsername
+id formContainer
+id headerBar
+id layoutMain
+id particlesBackground
+id spRegRole
+id spRole
+id tvIntro
+id tvStatusLink
+id tvToLogin
+id tvToRegister
+layout activity_login
+layout activity_register
