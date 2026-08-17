@@ -96,110 +96,84 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyStyles() {
-        binding.btnLogout.background = StudentStyleHelper.getStyleDrawable(this, "#33020617", "#73F59E0B", 2, 8f)
-        binding.btnAddStudent.background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
+    // Memberikan Outline Oranye Transparan yang jelas pada Tombol Logout
+    binding.btnLogout.background = StudentStyleHelper.getStyleDrawable(this, "#220F172A", "#F59E0B", 2, 8f)
+    binding.btnAddStudent.background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
 
-        binding.etSearch.background = StudentStyleHelper.getStyleDrawable(this, "#730F172A", "#3338BDF8", 1, 8f)
+    binding.etSearch.background = StudentStyleHelper.getStyleDrawable(this, "#730F172A", "#3338BDF8", 1, 8f)
 
-        val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#990F172A", "#F59E0B", 2, 14f)
-        binding.cardInnerContainer.background = cardDrawable
-        StudentStyleHelper.applyGlowAnimation(this, cardDrawable)
+    val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#990F172A", "#F59E0B", 2, 14f)
+    binding.cardInnerContainer.background = cardDrawable
+    StudentStyleHelper.applyGlowAnimation(this, cardDrawable)
+}
+
+private fun populateTable(students: List<Student>) {
+    val childCount = binding.tableStudents.childCount
+    if (childCount > 1) {
+        binding.tableStudents.removeViews(1, childCount - 1)
     }
 
-    private fun fetchDataStudents() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val api = DynamicRetrofitClient.getService(baseUrl)
-                val response = api.getStudents()
-                withContext(Dispatchers.Main) {
-                    masterStudentList = response.data ?: emptyList()
-                    filterTableData(binding.etSearch.text.toString())
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, "Gagal memuat data: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
+    students.forEachIndexed { index, student ->
+        val tableRow = TableRow(this)
+
+        // Ubah isCenter menjadi true untuk SEMUA sel tabel agar rata tengah sempurna
+        tableRow.addView(createTableCell((index + 1).toString(), false, 55, isCenter = true))
+        tableRow.addView(createTableCell(student.nis, false, 130, isCenter = true))
+        tableRow.addView(createTableCell(student.nama, false, 200, isCenter = true))
+        tableRow.addView(createTableCell(if (student.alamat.isNullOrEmpty()) "-" else student.alamat, false, 220, isCenter = true))
+
+        val density = resources.displayMetrics.density
+        val actionLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            setPadding((4 * density).toInt(), (6 * density).toInt(), (4 * density).toInt(), (6 * density).toInt())
+            background = StudentStyleHelper.getStyleDrawable(context, "#990B0F19", "#3338BDF8", 1, 0f)
+            layoutParams = TableRow.LayoutParams((220 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
+
+        val btnDetail = Button(this).apply {
+            text = "Detail"
+            textSize = 11f
+            setTypeface(null, Typeface.BOLD)
+            setTextColor(Color.parseColor("#38BDF8"))
+            isAllCaps = false
+            layoutParams = LinearLayout.LayoutParams((62 * density).toInt(), (32 * density).toInt())
+            background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#38BDF8", 1, 6f)
+            setOnClickListener { StudentDialogHelper.showDetailDialog(this@MainActivity, student, baseUrl) }
+        }
+
+        val btnEdit = Button(this).apply {
+            text = "Edit"
+            textSize = 11f
+            setTypeface(null, Typeface.BOLD)
+            setTextColor(Color.parseColor("#020617"))
+            isAllCaps = false
+            layoutParams = LinearLayout.LayoutParams((54 * density).toInt(), (32 * density).toInt()).apply {
+                setMargins((4 * density).toInt(), 0, (4 * density).toInt(), 0)
+            }
+            background = StudentStyleHelper.getStyleDrawable(context, "", null, 0, 6f, isGradientOrange = true)
+            setOnClickListener { showFormDialog(student) }
+        }
+
+        val btnDelete = Button(this).apply {
+            text = "Hapus"
+            textSize = 11f
+            setTypeface(null, Typeface.BOLD)
+            setTextColor(Color.parseColor("#EF4444"))
+            isAllCaps = false
+            layoutParams = LinearLayout.LayoutParams((58 * density).toInt(), (32 * density).toInt())
+            background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#EF4444", 1, 6f)
+            setOnClickListener { deleteData(student.id) }
+        }
+
+        actionLayout.addView(btnDetail)
+        actionLayout.addView(btnEdit)
+        actionLayout.addView(btnDelete)
+        tableRow.addView(actionLayout)
+
+        binding.tableStudents.addView(tableRow)
     }
-
-    private fun filterTableData(query: String) {
-        val filteredList = if (query.isEmpty()) {
-            masterStudentList
-        } else {
-            masterStudentList.filter {
-                it.nama.contains(query, ignoreCase = true) || it.nis.contains(query, ignoreCase = true)
-            }
-        }
-        populateTable(filteredList)
-    }
-
-    private fun populateTable(students: List<Student>) {
-        val childCount = binding.tableStudents.childCount
-        if (childCount > 1) {
-            binding.tableStudents.removeViews(1, childCount - 1)
-        }
-
-        students.forEachIndexed { index, student ->
-            val tableRow = TableRow(this)
-
-            tableRow.addView(createTableCell((index + 1).toString(), false, 55, isCenter = true))
-            tableRow.addView(createTableCell(student.nis, false, 130, isCenter = true))
-            tableRow.addView(createTableCell(student.nama, false, 200))
-            tableRow.addView(createTableCell(student.alamat, false, 220))
-
-            val density = resources.displayMetrics.density
-            val actionLayout = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER
-                setPadding((4 * density).toInt(), (6 * density).toInt(), (4 * density).toInt(), (6 * density).toInt())
-                background = StudentStyleHelper.getStyleDrawable(context, "#990B0F19", "#3338BDF8", 1, 0f)
-                layoutParams = TableRow.LayoutParams((220 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
-            }
-
-            val btnDetail = Button(this).apply {
-                text = "Detail"
-                textSize = 11f
-                setTypeface(null, Typeface.BOLD)
-                setTextColor(Color.parseColor("#38BDF8"))
-                isAllCaps = false
-                layoutParams = LinearLayout.LayoutParams((62 * density).toInt(), (32 * density).toInt())
-                background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#38BDF8", 1, 6f)
-                setOnClickListener { StudentDialogHelper.showDetailDialog(this@MainActivity, student, baseUrl) }
-            }
-
-            val btnEdit = Button(this).apply {
-                text = "Edit"
-                textSize = 11f
-                setTypeface(null, Typeface.BOLD)
-                setTextColor(Color.parseColor("#020617"))
-                isAllCaps = false
-                layoutParams = LinearLayout.LayoutParams((54 * density).toInt(), (32 * density).toInt()).apply {
-                    setMargins((4 * density).toInt(), 0, (4 * density).toInt(), 0)
-                }
-                background = StudentStyleHelper.getStyleDrawable(context, "", null, 0, 6f, isGradientOrange = true)
-                setOnClickListener { showFormDialog(student) }
-            }
-
-            val btnDelete = Button(this).apply {
-                text = "Hapus"
-                textSize = 11f
-                setTypeface(null, Typeface.BOLD)
-                setTextColor(Color.parseColor("#EF4444"))
-                isAllCaps = false
-                layoutParams = LinearLayout.LayoutParams((58 * density).toInt(), (32 * density).toInt())
-                background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#EF4444", 1, 6f)
-                setOnClickListener { deleteData(student.id) }
-            }
-
-            actionLayout.addView(btnDetail)
-            actionLayout.addView(btnEdit)
-            actionLayout.addView(btnDelete)
-            tableRow.addView(actionLayout)
-
-            binding.tableStudents.addView(tableRow)
-        }
-    }
+}
 
     private fun createTableCell(text: String, isHeader: Boolean, widthDp: Int, isCenter: Boolean = false): TextView {
         val density = resources.displayMetrics.density
