@@ -7,25 +7,6 @@
     android:background="#0F172A"
     tools:context=".MainActivity">
 
-    <!-- Background Decoration Glows -->
-    <View
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="-50dp"
-        android:background="@drawable/blur_glow_teal" />
-
-    <View
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="-50dp"
-        android:layout_marginBottom="-50dp"
-        android:background="@drawable/blur_glow_blue" />
-
     <!-- Top Bar Header -->
     <LinearLayout
         android:id="@+id/headerBar"
@@ -63,14 +44,14 @@
             android:id="@+id/btnLogout"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/btn_glass_icon"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Logout"
             android:padding="10dp"
             android:src="@android:drawable/ic_lock_power_off"
             app:tint="#EF4444" />
     </LinearLayout>
 
-    <!-- Container Utama Tengah dengan Margin Aman -->
+    <!-- Container Utama Tengah -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -92,7 +73,6 @@
                 android:layout_height="36dp"
                 android:layout_gravity="start"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_glass_primary"
                 android:paddingHorizontal="16dp"
                 android:text="+ Tambah Siswa"
                 android:textAllCaps="false"
@@ -100,13 +80,13 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- Card Utama Glassmorphism -->
+            <!-- Card Utama -->
             <LinearLayout
                 android:id="@+id/cardTable"
                 android:layout_width="wrap_content"
                 android:layout_height="360dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/glass_card_border"
+                android:background="#1E293B"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -114,7 +94,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_table_header"
+                    android:background="#334155"
                     android:orientation="horizontal"
                     android:paddingVertical="10dp">
 
