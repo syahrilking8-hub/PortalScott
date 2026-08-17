@@ -225,7 +225,7 @@ class MainActivity : AppCompatActivity() {
             setTextColor(if (isHeader) Color.parseColor("#F59E0B") else Color.parseColor("#F8FAFC"))
             textSize = 12f
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
-            padding = (8 * density).toInt()
+            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
             
             background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
             layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
@@ -343,6 +343,7 @@ class MainActivity : AppCompatActivity() {
         val rbTgl = tglLahir.toRequestBody(textMediaType)
         val rbAlamat = alamat.toRequestBody(textMediaType)
         val rbHobi = hobi.toRequestBody(textMediaType)
+        val rbHobiObj = hobi.toRequestBody(textMediaType)
         val rbCitaCita = citaCita.toRequestBody(textMediaType)
 
         var photoPart: MultipartBody.Part? = null
@@ -359,10 +360,10 @@ class MainActivity : AppCompatActivity() {
             try {
                 val api = DynamicRetrofitClient.getService(baseUrl)
                 val response = if (id == null) {
-                    api.addStudent(rbNis, rbNama, rbTempatLahir, rbTgl, rbAlamat, rbHobi, rbCitaCita, photoPart)
+                    api.addStudent(rbNis, rbNama, rbTempatLahir, rbTgl, rbAlamat, rbHobiObj, rbCitaCita, photoPart)
                 } else {
                     val rbId = id.toRequestBody(textMediaType)
-                    api.updateStudent(rbId, rbNis, rbNama, rbTempatLahir, rbTgl, rbAlamat, rbHobi, rbCitaCita, photoPart)
+                    api.updateStudent(rbId, rbNis, rbNama, rbTempatLahir, rbTgl, rbAlamat, rbHobiObj, rbCitaCita, photoPart)
                 }
 
                 withContext(Dispatchers.Main) {
@@ -407,18 +408,6 @@ class MainActivity : AppCompatActivity() {
         tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
 
         val rawPath = student.foto ?: ""
-        if (rawPath.isNotBlank()) {
-            val cleanBase = if (!baseUrl.startsWith("http")) "https://$baseUrl" else baseUrl
-            val fileName = rawPath.trim().substringAfterLast('/')
-            val finalUrl = "${cleanBase.trimEnd('/')}/public/uploads/$fileName"
-
-                    val rawPath = student.foto ?: ""
-        if (rawPath.isNotBlank()) {
-            val cleanBase = if (!baseUrl.startsWith("http")) "https://$baseUrl" else baseUrl
-            val fileName = rawPath.trim().substringAfterLast('/')
-            val finalUrl = "${cleanBase.trimEnd('/')}/public/uploads/$fileName"
-
-                    val rawPath = student.foto ?: ""
         if (rawPath.isNotBlank()) {
             val cleanBase = if (!baseUrl.startsWith("http")) "https://$baseUrl" else baseUrl
             val fileName = rawPath.trim().substringAfterLast('/')
