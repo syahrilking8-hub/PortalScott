@@ -24,7 +24,6 @@ class RegisterActivity : Activity() {
     private lateinit var cardRegister: LinearLayout
     private lateinit var etRegUsername: EditText
     private lateinit var etRegPassword: EditText
-    private lateinit var spRegRole: Spinner
     private lateinit var btnCancel: Button
     private lateinit var btnRegister: Button
     private lateinit var tvToLogin: TextView
@@ -39,17 +38,27 @@ class RegisterActivity : Activity() {
         cardRegister = findViewById(R.id.cardRegister)
         etRegUsername = findViewById(R.id.etRegUsername)
         etRegPassword = findViewById(R.id.etRegPassword)
-        spRegRole = findViewById(R.id.spRegRole)
         btnCancel = findViewById(R.id.btnCancel)
         btnRegister = findViewById(R.id.btnRegister)
         tvToLogin = findViewById(R.id.tvToLogin)
 
+        enforceCardWidth()
         applyStyles()
-        setupSpinner()
 
         btnCancel.setOnClickListener { finish() }
         tvToLogin.setOnClickListener { finish() }
         btnRegister.setOnClickListener { doRegister() }
+    }
+
+    private fun enforceCardWidth() {
+        val displayMetrics = resources.displayMetrics
+        val maxWidthPx = (400 * displayMetrics.density).toInt()
+        val screenWidthPx = displayMetrics.widthPixels
+        
+        val targetWidth = if (screenWidthPx > maxWidthPx) maxWidthPx else ViewGroup.LayoutParams.MATCH_PARENT
+        val params = cardRegister.layoutParams
+        params.width = targetWidth
+        cardRegister.layoutParams = params
     }
 
     private fun setupEdgeToEdge() {
@@ -88,7 +97,6 @@ class RegisterActivity : Activity() {
         }
         etRegUsername.background = inputBg()
         etRegPassword.background = inputBg()
-        spRegRole.background = inputBg()
 
         btnRegister.background = GradientDrawable(
             GradientDrawable.Orientation.LEFT_RIGHT,
@@ -116,36 +124,13 @@ class RegisterActivity : Activity() {
         glowAnim.start()
     }
 
-    private fun setupSpinner() {
-        val roles = arrayOf("User (Read Only)", "Admin (Full Control)")
-        val adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roles) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getView(position, convertView, parent) as TextView
-                v.setTextColor(Color.parseColor("#f8fafc"))
-                v.textSize = 14f
-                return v
-            }
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getDropDownView(position, convertView, parent) as TextView
-                v.setTextColor(Color.parseColor("#f8fafc"))
-                v.setBackgroundColor(Color.parseColor("#0f172a"))
-                return v
-            }
-        }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spRegRole.adapter = adapter
-    }
-
     private fun doRegister() {
         val baseUrl = prefs.getString("base_url", "") ?: ""
         val username = etRegUsername.text.toString().trim()
         val password = etRegPassword.text.toString().trim()
-        val selectedRoleText = spRegRole.selectedItem.toString()
-
-        val role = if (selectedRoleText.contains("Admin", ignoreCase = true)) "ADMIN" else "USER"
 
         if (baseUrl.isEmpty()) {
-            Toast.makeText(this, "URL Base Server belum disetting di halaman Login!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "URL Server belum disetting!", Toast.LENGTH_SHORT).show()
             return
         }
         if (username.isEmpty() || password.isEmpty()) {
@@ -159,23 +144,21 @@ class RegisterActivity : Activity() {
         thread {
             try {
                 val targetUrl = if (baseUrl.endsWith("/api")) "$baseUrl/register.php" else "$baseUrl/api/register.php"
-                val url = URL(targetUrl)
-                val conn = url.openConnection() as HttpURLConnection
-                conn.requestMethod = "POST"
-                conn.setRequestProperty("Content-Type", "application/json")
-                conn.connectTimeout = 8000
-                conn.readTimeout = 8000
-                conn.doOutput = true
+                val conn = (URL(targetUrl).openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    setRequestProperty("Content-Type", "application/json")
+                    connectTimeout = 8000
+                    readTimeout = 8000
+                    doOutput = true
+                }
 
                 val jsonBody = JSONObject().apply {
                     put("username", username)
                     put("password", password)
-                    put("role", role)
+                    put("role", "USER")
                 }
 
-                val writer = OutputStreamWriter(conn.outputStream)
-                writer.write(jsonBody.toString())
-                writer.flush()
+                OutputStreamWriter(conn.outputStream).use { it.write(jsonBody.toString()) }
 
                 val code = conn.responseCode
                 val responseText = if (code in 200..299) {

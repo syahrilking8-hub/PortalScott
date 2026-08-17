@@ -13,6 +13,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -50,42 +51,43 @@ class LoginActivity : AppCompatActivity() {
         val etUsername = findViewById<EditText>(R.id.etUsername)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
-        val btnLogoutLink = findViewById<Button>(R.id.btnLogoutLink)
+        val btnClearLink = findViewById<Button>(R.id.btnClearLink)
         val layoutIndicator = findViewById<View>(R.id.layoutIndicator)
         val tvToRegister = findViewById<TextView>(R.id.tvToRegister)
+
+        enforceCardWidth(cardLogin)
 
         cardLogin.background = getStyleDrawable("#800F172A", "#F59E0B", 2, 24f)
         etUsername.background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         etPassword.background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         btnLogin.background = getStyleDrawable("", "#F59E0B", 0, 10f, isGradientOrange = true)
-        btnLogoutLink.background = getStyleDrawable("#0F172A", "#F59E0B", 1, 8f)
+        btnClearLink.background = getStyleDrawable("#0F172A", "#EF4444", 1, 8f)
 
         updateUrlState(currentBaseUrl.isNotEmpty())
 
         layoutIndicator.setOnClickListener { showUrlDialog() }
+
         tvToRegister.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
+            if (currentBaseUrl.isNotEmpty()) {
+                startActivity(Intent(this, RegisterActivity::class.java))
+            }
         }
 
-        btnLogoutLink.setOnClickListener {
+        btnClearLink.setOnClickListener {
             currentBaseUrl = ""
             prefs.edit().remove("base_url").remove("user_role").apply()
             updateUrlState(false)
-            Toast.makeText(this, "Link Server dihapus", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Link Server berhasil dikosongkan", Toast.LENGTH_SHORT).show()
         }
 
         btnLogin.setOnClickListener {
+            if (currentBaseUrl.isEmpty()) return@setOnClickListener
+
             val username = etUsername.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Username dan password wajib diisi", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (currentBaseUrl.isEmpty()) {
-                Toast.makeText(this, "Harap set URL Server terlebih dahulu!", Toast.LENGTH_SHORT).show()
-                showUrlDialog()
                 return@setOnClickListener
             }
 
@@ -112,6 +114,17 @@ class LoginActivity : AppCompatActivity() {
         }, 1200)
     }
 
+    private fun enforceCardWidth(cardView: View) {
+        val displayMetrics = resources.displayMetrics
+        val maxWidthPx = (400 * displayMetrics.density).toInt()
+        val screenWidthPx = displayMetrics.widthPixels
+        
+        val targetWidth = if (screenWidthPx > maxWidthPx) maxWidthPx else ViewGroup.LayoutParams.MATCH_PARENT
+        val params = cardView.layoutParams
+        params.width = targetWidth
+        cardView.layoutParams = params
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         animatorSet?.cancel()
@@ -120,7 +133,11 @@ class LoginActivity : AppCompatActivity() {
     private fun updateUrlState(hasUrl: Boolean) {
         val dotStatus = findViewById<View>(R.id.dotStatus)
         val tvStatusLink = findViewById<TextView>(R.id.tvStatusLink)
-        val btnLogoutLink = findViewById<Button>(R.id.btnLogoutLink)
+        val btnClearLink = findViewById<Button>(R.id.btnClearLink)
+        val etUsername = findViewById<EditText>(R.id.etUsername)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val tvToRegister = findViewById<TextView>(R.id.tvToRegister)
 
         val dotDrawable = GradientDrawable().apply {
             shape = GradientDrawable.OVAL
@@ -131,11 +148,31 @@ class LoginActivity : AppCompatActivity() {
         if (hasUrl) {
             tvStatusLink.text = "link terhubung"
             tvStatusLink.setTextColor(Color.parseColor("#22c55e"))
-            btnLogoutLink.visibility = View.VISIBLE
+            btnClearLink.visibility = View.VISIBLE
+
+            etUsername.isEnabled = true
+            etPassword.isEnabled = true
+            btnLogin.isEnabled = true
+            tvToRegister.isEnabled = true
+
+            etUsername.alpha = 1.0f
+            etPassword.alpha = 1.0f
+            btnLogin.alpha = 1.0f
+            tvToRegister.alpha = 1.0f
         } else {
             tvStatusLink.text = "link belum terisi"
             tvStatusLink.setTextColor(Color.parseColor("#ef4444"))
-            btnLogoutLink.visibility = View.GONE
+            btnClearLink.visibility = View.GONE
+
+            etUsername.isEnabled = false
+            etPassword.isEnabled = false
+            btnLogin.isEnabled = false
+            tvToRegister.isEnabled = false
+
+            etUsername.alpha = 0.4f
+            etPassword.alpha = 0.4f
+            btnLogin.alpha = 0.4f
+            tvToRegister.alpha = 0.4f
         }
     }
 
@@ -255,9 +292,10 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.text = "Memuat..."
 
         val endpoint = "${currentBaseUrl}/login"
-        val jsonPayload = JSONObject()
-        jsonPayload.put("username", u)
-        jsonPayload.put("password", p)
+        val jsonPayload = JSONObject().apply {
+            put("username", u)
+            put("password", p)
+        }
 
         val body = jsonPayload.toString().toRequestBody("application/json".toMediaType())
         val req = Request.Builder().url(endpoint).post(body).build()
@@ -273,52 +311,45 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-    val resString = response.body?.string() ?: ""
-    runOnUiThread {
-        if (isFinishing || isDestroyed) return@runOnUiThread
-        btnLogin.isEnabled = true
-        btnLogin.text = "MASUK"
-        if (response.isSuccessful) {
-            try {
-                val jsonRes = JSONObject(resString)
-                var rawRole = ""
+                val resString = response.body?.string() ?: ""
+                runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+                    btnLogin.isEnabled = true
+                    btnLogin.text = "MASUK"
+                    if (response.isSuccessful) {
+                        try {
+                            val jsonRes = JSONObject(resString)
+                            var rawRole = ""
 
-                // Cek bertahap semua kemungkinan struktur JSON dari backend
-                if (jsonRes.has("role")) {
-                    rawRole = jsonRes.optString("role", "")
+                            if (jsonRes.has("role")) rawRole = jsonRes.optString("role", "")
+                            if (rawRole.isEmpty() && jsonRes.has("user")) {
+                                val userObj = jsonRes.optJSONObject("user")
+                                rawRole = userObj?.optString("role", userObj.optString("Role", "")) ?: ""
+                            }
+                            if (rawRole.isEmpty() && jsonRes.has("data")) {
+                                val dataObj = jsonRes.optJSONObject("data")
+                                rawRole = dataObj?.optString("role", dataObj.optString("Role", "")) ?: ""
+                            }
+
+                            val cleanRole = if (rawRole.trim().equals("ADMIN", ignoreCase = true)) "ADMIN" else "USER"
+
+                            prefs.edit()
+                                .remove("role")
+                                .putString("user_role", cleanRole)
+                                .apply()
+
+                        } catch (e: Exception) {
+                            prefs.edit().putString("user_role", "USER").apply()
+                        }
+
+                        Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(this@LoginActivity, "Username/Password Salah!", Toast.LENGTH_LONG).show()
+                    }
                 }
-                
-                if (rawRole.isEmpty() && jsonRes.has("user")) {
-                    val userObj = jsonRes.optJSONObject("user")
-                    rawRole = userObj?.optString("role", userObj.optString("Role", "")) ?: ""
-                }
-                
-                if (rawRole.isEmpty() && jsonRes.has("data")) {
-                    val dataObj = jsonRes.optJSONObject("data")
-                    rawRole = dataObj?.optString("role", dataObj.optString("Role", "")) ?: ""
-                }
-
-                // Normalisasi string role agar dipastikan terdeteksi ADMIN jika ada kata admin
-                val cleanRole = if (rawRole.trim().equals("ADMIN", ignoreCase = true)) "ADMIN" else "USER"
-
-                // Simpan ke SharedPreferences app_settings agar dibaca MainActivity
-                prefs.edit()
-                    .remove("role")
-                    .putString("user_role", cleanRole)
-                    .apply()
-
-            } catch (e: Exception) {
-                prefs.edit().putString("user_role", "USER").apply()
             }
-
-            Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-            finish()
-        } else {
-            Toast.makeText(this@LoginActivity, "Username/Password Salah!", Toast.LENGTH_LONG).show()
-        }
-    }
-}
         })
     }
 

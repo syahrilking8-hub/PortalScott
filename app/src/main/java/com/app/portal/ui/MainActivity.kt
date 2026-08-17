@@ -1,11 +1,9 @@
 package com.app.portal.ui
 
-import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -17,15 +15,13 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.app.portal.DynamicRetrofitClient
 import com.app.portal.R
 import com.app.portal.Student
 import com.app.portal.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
-import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
@@ -51,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -62,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         binding.tvRole.text = userRole.uppercase()
 
         if (baseUrl.isEmpty()) {
-            Toast.makeText(this, "URL Server belum diset! Silakan login ulang.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "URL Server belum diset!", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
@@ -88,54 +84,15 @@ class MainActivity : AppCompatActivity() {
         fetchDataStudents()
     }
 
-    private fun getStyleDrawable(
-        bgColor: String,
-        strokeColor: String? = null,
-        strokeWidthDp: Int = 0,
-        radiusDp: Float = 8f,
-        isGradientOrange: Boolean = false,
-        isCircle: Boolean = false
-    ): GradientDrawable {
-        return GradientDrawable().apply {
-            if (isCircle) {
-                shape = GradientDrawable.OVAL
-            } else {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = radiusDp * resources.displayMetrics.density
-            }
-
-            if (isGradientOrange) {
-                orientation = GradientDrawable.Orientation.TL_BR
-                colors = intArrayOf(Color.parseColor("#F59E0B"), Color.parseColor("#D97706"))
-            } else if (bgColor.isNotEmpty()) {
-                setColor(Color.parseColor(bgColor))
-            }
-
-            strokeColor?.let {
-                setStroke((strokeWidthDp * resources.displayMetrics.density).toInt(), Color.parseColor(it))
-            }
-        }
-    }
-
     private fun applyStyles() {
-        binding.btnLogout.background = getStyleDrawable("#80020617", "#73F59E0B", 2, 8f)
-        binding.btnAddStudent.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
+        binding.btnLogout.background = StudentStyleHelper.getStyleDrawable(this, "#33020617", "#73F59E0B", 2, 8f)
+        binding.btnAddStudent.background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
 
-        val cardDrawable = getStyleDrawable("#800A101F", "#99F59E0B", 2, 20f)
+        val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#330A101F", "#99F59E0B", 2, 20f)
         binding.cardTable.background = cardDrawable
-        binding.layoutTableBorder.background = getStyleDrawable("#00000000", "#33F59E0B", 1, 8f)
+        binding.layoutTableBorder.background = StudentStyleHelper.getStyleDrawable(this, "#00000000", "#33F59E0B", 1, 8f)
 
-        val glowAnim = ValueAnimator.ofFloat(0.4f, 0.9f).apply {
-            duration = 1500
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.REVERSE
-            addUpdateListener { anim ->
-                val alphaVal = (anim.animatedValue as Float * 255).toInt()
-                val colorWithAlpha = Color.argb(alphaVal, 245, 158, 11)
-                cardDrawable.setStroke((2 * resources.displayMetrics.density).toInt(), colorWithAlpha)
-            }
-        }
-        glowAnim.start()
+        StudentStyleHelper.applyGlowAnimation(this, cardDrawable)
     }
 
     private fun fetchDataStudents() {
@@ -161,9 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         students.forEachIndexed { index, student ->
-            val tableRow = TableRow(this).apply {
-                setPadding(0, 0, 0, 0)
-            }
+            val tableRow = TableRow(this)
 
             tableRow.addView(createTableCell((index + 1).toString(), false, 45, isCenter = true))
             tableRow.addView(createTableCell(student.nama, false, 160))
@@ -174,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
                 setPadding((6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt())
-                background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
+                background = StudentStyleHelper.getStyleDrawable(context, "#00000000", "#3338BDF8", 1, 0f)
                 layoutParams = TableRow.LayoutParams((210 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
             }
 
@@ -184,8 +139,8 @@ class MainActivity : AppCompatActivity() {
                 setTextColor(Color.parseColor("#38BDF8"))
                 isAllCaps = false
                 layoutParams = LinearLayout.LayoutParams((56 * density).toInt(), (30 * density).toInt())
-                background = getStyleDrawable("#1E293B", "#38BDF8", 1, 6f)
-                setOnClickListener { showDetailDialog(student) }
+                background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#38BDF8", 1, 6f)
+                setOnClickListener { StudentDialogHelper.showDetailDialog(this@MainActivity, student, baseUrl) }
             }
 
             val btnEdit = Button(this).apply {
@@ -196,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                 layoutParams = LinearLayout.LayoutParams((48 * density).toInt(), (30 * density).toInt()).apply {
                     setMargins((4 * density).toInt(), 0, (4 * density).toInt(), 0)
                 }
-                background = getStyleDrawable("", null, 0, 6f, isGradientOrange = true)
+                background = StudentStyleHelper.getStyleDrawable(context, "", null, 0, 6f, isGradientOrange = true)
                 setOnClickListener { showFormDialog(student) }
             }
 
@@ -206,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                 setTextColor(Color.parseColor("#EF4444"))
                 isAllCaps = false
                 layoutParams = LinearLayout.LayoutParams((52 * density).toInt(), (30 * density).toInt())
-                background = getStyleDrawable("#1E293B", "#EF4444", 1, 6f)
+                background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#EF4444", 1, 6f)
                 setOnClickListener { deleteData(student.id) }
             }
 
@@ -227,8 +182,7 @@ class MainActivity : AppCompatActivity() {
             textSize = 12f
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
             setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
-            
-            background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
+            background = StudentStyleHelper.getStyleDrawable(context, "#00000000", "#3338BDF8", 1, 0f)
             layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
     }
@@ -239,18 +193,18 @@ class MainActivity : AppCompatActivity() {
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
 
-        dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
-        dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.tvDatePicker).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etAlamat).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etHobi).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etCitaCita).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.containerInputFile).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.btnPickFile).background = getStyleDrawable("", null, 0, 6f, isGradientOrange = true)
-        dialogView.findViewById<View>(R.id.btnCancel).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.btnSubmit).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
+        dialogView.findViewById<View>(R.id.cardDialogForm).background = StudentStyleHelper.getStyleDrawable(this, "#330F172A", "#F59E0B", 2, 20f)
+        dialogView.findViewById<View>(R.id.etNis).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etNama).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etTempatLahir).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.tvDatePicker).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etAlamat).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etHobi).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etCitaCita).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.containerInputFile).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.btnPickFile).background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 6f, isGradientOrange = true)
+        dialogView.findViewById<View>(R.id.btnCancel).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.btnSubmit).background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
 
         val tvFormTitle = dialogView.findViewById<TextView>(R.id.tvFormTitle)
         val etNis = dialogView.findViewById<EditText>(R.id.etNis)
@@ -312,17 +266,13 @@ class MainActivity : AppCompatActivity() {
         btnSubmit.setOnClickListener {
             val nisStr = etNis.text.toString()
             val namaStr = etNama.text.toString()
-            val tempatLahirStr = etTempatLahir.text.toString()
-            val alamatStr = etAlamat.text.toString()
-            val hobiStr = etHobi.text.toString()
-            val citaCitaStr = etCitaCita.text.toString()
 
             if (nisStr.isEmpty() || namaStr.isEmpty()) {
                 Toast.makeText(this, "NIS dan Nama wajib diisi!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            saveData(student?.id, nisStr, namaStr, tempatLahirStr, selectedDate, alamatStr, hobiStr, citaCitaStr, dialog)
+            saveData(student?.id, nisStr, namaStr, etTempatLahir.text.toString(), selectedDate, etAlamat.text.toString(), etHobi.text.toString(), etCitaCita.text.toString(), dialog)
         }
 
         dialog.show()
@@ -381,72 +331,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDetailDialog(student: Student) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
-
-        val cardDialog = dialogView.findViewById<View>(R.id.cardDialogDetail)
-        val subcardBio = dialogView.findViewById<View>(R.id.subcardBiodata)
-        val vAvatarGlow = dialogView.findViewById<View>(R.id.vAvatarGlow)
-        val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
-
-        cardDialog.background = getStyleDrawable("#B30F172A", "#F59E0B", 2, 20f)
-        subcardBio.background = getStyleDrawable("#80090D16", "#3338BDF8", 1, 12f)
-        vAvatarGlow.background = getStyleDrawable("", null, 0, 0f, isGradientOrange = true, isCircle = true)
-        btnClose.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
-
-        val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
-        val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
-        val tvNis = dialogView.findViewById<TextView>(R.id.tvDetailNis)
-        val tvAlamat = dialogView.findViewById<TextView>(R.id.tvDetailAlamat)
-        val tvTtl = dialogView.findViewById<TextView>(R.id.tvDetailTtl)
-        val tvHobi = dialogView.findViewById<TextView>(R.id.tvDetailHobi)
-        val tvCitaCita = dialogView.findViewById<TextView>(R.id.tvDetailCitaCita)
-
-        tvNis.text = ": ${student.nis}"
-        tvNama.text = ": ${student.nama}"
-        tvAlamat.text = ": ${student.alamat}"
-        tvTtl.text = ": ${student.tempatLahir ?: "-"}, ${student.tanggalLahir ?: "-"}"
-        tvHobi.text = ": ${if (!student.hobi.isNullOrEmpty()) student.hobi else "-"}"
-        tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
-
-        val rawPath = student.foto ?: ""
-        if (rawPath.isNotBlank()) {
-            val cleanBase = if (!baseUrl.startsWith("http")) "https://$baseUrl" else baseUrl
-            val fileName = rawPath.trim().substringAfterLast('/')
-            val finalUrl = "${cleanBase.trimEnd('/')}/public/uploads/$fileName"
-
-            ivFoto.load(finalUrl) {
-                crossfade(true)
-                size(200, 200)
-                scale(coil.size.Scale.FILL)
-                allowHardware(false)
-                transformations(CircleCropTransformation())
-                placeholder(android.R.drawable.ic_menu_gallery)
-                error(android.R.drawable.ic_menu_report_image)
-            }
-        } else {
-            ivFoto.setImageResource(android.R.drawable.ic_menu_gallery)
-        }
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .create()
-
-        dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            setGravity(Gravity.CENTER)
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setDimAmount(0.7f) 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-                attributes.blurBehindRadius = 25
-            }
-        }
-
-        btnClose.setOnClickListener { dialog.dismiss() }
-        dialog.show()
-    }
-
     private fun deleteData(id: String) {
         AlertDialog.Builder(this)
             .setTitle("Konfirmasi Hapus")
@@ -471,7 +355,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-private fun getFileFromUri(uri: Uri): File? {
+    private fun getFileFromUri(uri: Uri): File? {
         return try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
             val tempFile = File.createTempFile("upload_", ".jpg", cacheDir)
