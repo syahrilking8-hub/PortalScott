@@ -134,96 +134,109 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showUrlDialog() {
-        val container = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(48, 48, 48, 48)
-            background = getStyleDrawable("#0F172A", "#F59E0B", 2, 20f)
-        }
-
-        val tvTitle = TextView(this).apply {
-            text = "Set URL Server"
-            setTextColor(Color.parseColor("#F8FAFC"))
-            textSize = 18f
-            setTypeface(null, android.graphics.Typeface.BOLD)
-            gravity = Gravity.CENTER
-        }
-        container.addView(tvTitle)
-
-        val tvSub = TextView(this).apply {
-            text = "isi link pada kolom di bawah ini"
-            setTextColor(Color.parseColor("#F59E0B"))
-            textSize = 12f
-            setTypeface(null, android.graphics.Typeface.BOLD)
-            gravity = Gravity.CENTER
-            setPadding(0, 6, 0, 20)
-        }
-        container.addView(tvSub)
-
-        val input = EditText(this).apply {
-            hint = "https://namadomain.com"
-            setTextColor(Color.WHITE)
-            setHintTextColor(Color.parseColor("#475569"))
-            setText(currentBaseUrl)
-            setSingleLine(true)
-            setPadding(30, 24, 30, 24)
-            background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        }
-        container.addView(input)
-
-        val buttonLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, 24, 0, 0)
-        }
-
-        val btnCancel = Button(this).apply {
-            layoutParams = LinearLayout.LayoutParams(0, 120, 1f).apply { setMargins(0, 0, 12, 0) }
-            text = "Batal"
-            setTextColor(Color.parseColor("#F8FAFC"))
-            textSize = 13f
-            setTypeface(null, android.graphics.Typeface.BOLD)
-            isAllCaps = false
-            background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        }
-
-        val btnSubmit = Button(this).apply {
-            layoutParams = LinearLayout.LayoutParams(0, 120, 1f).apply { setMargins(12, 0, 0, 0) }
-            text = "Simpan"
-            setTextColor(Color.parseColor("#020617"))
-            textSize = 13f
-            setTypeface(null, android.graphics.Typeface.BOLD)
-            isAllCaps = false
-            background = getStyleDrawable("", "#F59E0B", 0, 8f, isGradientOrange = true)
-        }
-
-        buttonLayout.addView(btnCancel)
-        buttonLayout.addView(btnSubmit)
-        container.addView(buttonLayout)
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(container)
-            .create()
-
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        btnSubmit.setOnClickListener {
-            val text = input.text.toString().trim()
-            if (text.isNotEmpty()) {
-                currentBaseUrl = sanitizeUrl(text)
-                prefs.edit().putString("base_url", currentBaseUrl).apply()
-                updateUrlState(true)
-                Toast.makeText(this, "Link server tersimpan!", Toast.LENGTH_SHORT).show()
-            } else {
-                currentBaseUrl = ""
-                prefs.edit().remove("base_url").apply()
-                updateUrlState(false)
-                Toast.makeText(this, "Link server dikosongkan!", Toast.LENGTH_SHORT).show()
-            }
-            dialog.dismiss()
-        }
-
-        btnCancel.setOnClickListener { dialog.dismiss() }
-        dialog.show()
+    // Root container transparan agar overlay dialog tidak berwarna solid
+    val rootLayout = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        gravity = Gravity.CENTER
+        setPadding(40, 0, 40, 0)
     }
+
+    val container = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        setPadding(48, 48, 48, 48)
+        background = getStyleDrawable("#0F172A", "#F59E0B", 2, 20f)
+    }
+
+    val tvTitle = TextView(this).apply {
+        text = "Set URL Server"
+        setTextColor(Color.parseColor("#F8FAFC"))
+        textSize = 18f
+        setTypeface(null, android.graphics.Typeface.BOLD)
+        gravity = Gravity.CENTER
+    }
+    container.addView(tvTitle)
+
+    val tvSub = TextView(this).apply {
+        text = "isi link pada kolom di bawah ini"
+        setTextColor(Color.parseColor("#F59E0B"))
+        textSize = 12f
+        setTypeface(null, android.graphics.Typeface.BOLD)
+        gravity = Gravity.CENTER
+        setPadding(0, 6, 0, 20)
+    }
+    container.addView(tvSub)
+
+    val input = EditText(this).apply {
+        hint = "https://namadomain.com"
+        setTextColor(Color.WHITE)
+        setHintTextColor(Color.parseColor("#475569"))
+        setText(currentBaseUrl)
+        setSingleLine(true)
+        setPadding(30, 24, 30, 24)
+        background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    }
+    container.addView(input)
+
+    val buttonLayout = LinearLayout(this).apply {
+        orientation = LinearLayout.HORIZONTAL
+        setPadding(0, 24, 0, 0)
+    }
+
+    val btnCancel = Button(this).apply {
+        layoutParams = LinearLayout.LayoutParams(0, 120, 1f).apply { setMargins(0, 0, 12, 0) }
+        text = "Batal"
+        setTextColor(Color.parseColor("#F8FAFC"))
+        textSize = 13f
+        setTypeface(null, android.graphics.Typeface.BOLD)
+        isAllCaps = false
+        background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    }
+
+    val btnSubmit = Button(this).apply {
+        layoutParams = LinearLayout.LayoutParams(0, 120, 1f).apply { setMargins(12, 0, 0, 0) }
+        text = "Simpan"
+        setTextColor(Color.parseColor("#020617"))
+        textSize = 13f
+        setTypeface(null, android.graphics.Typeface.BOLD)
+        isAllCaps = false
+        background = getStyleDrawable("", "#F59E0B", 0, 8f, isGradientOrange = true)
+    }
+
+    buttonLayout.addView(btnCancel)
+    buttonLayout.addView(btnSubmit)
+    container.addView(buttonLayout)
+    rootLayout.addView(container)
+
+    val dialog = AlertDialog.Builder(this)
+        .setView(rootLayout)
+        .create()
+
+    dialog.window?.apply {
+        setBackgroundDrawableResource(android.R.color.transparent)
+        // Hilangkan background dim bawaan Android agar transparan seperti web
+        setDimAmount(0.4f)
+    }
+
+    btnSubmit.setOnClickListener {
+        val text = input.text.toString().trim()
+        if (text.isNotEmpty()) {
+            currentBaseUrl = sanitizeUrl(text)
+            // Simpan secara sinkron menggunakan commit()
+            prefs.edit().putString("base_url", currentBaseUrl).commit()
+            updateUrlState(true)
+            Toast.makeText(this, "Link server tersimpan!", Toast.LENGTH_SHORT).show()
+        } else {
+            currentBaseUrl = ""
+            prefs.edit().remove("base_url").commit()
+            updateUrlState(false)
+            Toast.makeText(this, "Link server dikosongkan!", Toast.LENGTH_SHORT).show()
+        }
+        dialog.dismiss()
+    }
+
+    btnCancel.setOnClickListener { dialog.dismiss() }
+    dialog.show()
+}
 
     private fun doLogin(u: String, p: String) {
         val btnLogin = findViewById<Button>(R.id.btnLogin)

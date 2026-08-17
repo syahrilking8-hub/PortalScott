@@ -49,20 +49,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    super.onCreate(savedInstanceState)
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-        val prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        baseUrl = prefs.getString("base_url", "") ?: ""
+    // PERBAIKAN: Samakan nama file prefs dengan LoginActivity ("app_settings")
+    val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+    baseUrl = prefs.getString("base_url", "") ?: ""
 
-        if (baseUrl.isEmpty()) {
-            Toast.makeText(this, "URL Server belum diset! Silakan login ulang.", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-            return
-        }
+    if (baseUrl.isEmpty()) {
+        Toast.makeText(this, "URL Server belum diset! Silakan login ulang.", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+        return
+    }
 
         applyStyles()
 
