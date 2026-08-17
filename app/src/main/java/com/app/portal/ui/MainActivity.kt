@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -54,8 +55,8 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         baseUrl = prefs.getString("base_url", "") ?: ""
 
-        val userRole = prefs.getString("user_role", "USER") ?: "USER"
-        binding.tvRole.text = userRole.uppercase()
+        // Mengubah teks role 'USER' menjadi kalimat selamat datang
+        binding.tvRole.text = "• Selamat Datang di Panel Data Siswa"
 
         if (baseUrl.isEmpty()) {
             Toast.makeText(this, "URL Server belum diset!", Toast.LENGTH_SHORT).show()
@@ -84,18 +85,16 @@ class MainActivity : AppCompatActivity() {
         fetchDataStudents()
     }
 
-    // Di MainActivity.kt
-private fun applyStyles() {
-    binding.btnLogout.background = StudentStyleHelper.getStyleDrawable(this, "#33020617", "#73F59E0B", 2, 8f)
-    binding.btnAddStudent.background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
+    private fun applyStyles() {
+        binding.btnLogout.background = StudentStyleHelper.getStyleDrawable(this, "#33020617", "#73F59E0B", 2, 8f)
+        binding.btnAddStudent.background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
 
-    // Ubah strokeWidthDp menjadi 3 atau 4 agar border card tebal dan jelas
-    val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#330A101F", "#F59E0B", 3, 20f)
-    binding.cardTable.background = cardDrawable
-    binding.layoutTableBorder.background = StudentStyleHelper.getStyleDrawable(this, "#00000000", "#33F59E0B", 1, 8f)
+        // Card dengan background solid-dark (opacity ~60%) dan border emas tebal
+        val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#990F172A", "#F59E0B", 2, 16f)
+        binding.cardTable.background = cardDrawable
 
-    StudentStyleHelper.applyGlowAnimation(this, cardDrawable)
-}
+        StudentStyleHelper.applyGlowAnimation(this, cardDrawable)
+    }
 
     private fun fetchDataStudents() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -122,35 +121,38 @@ private fun applyStyles() {
         students.forEachIndexed { index, student ->
             val tableRow = TableRow(this)
 
-            tableRow.addView(createTableCell((index + 1).toString(), false, 45, isCenter = true))
-            tableRow.addView(createTableCell(student.nama, false, 160))
+            tableRow.addView(createTableCell((index + 1).toString(), false, 50, isCenter = true))
+            tableRow.addView(createTableCell(student.nis, false, 120, isCenter = true))
+            tableRow.addView(createTableCell(student.nama, false, 180))
             tableRow.addView(createTableCell(student.alamat, false, 200))
 
             val density = resources.displayMetrics.density
             val actionLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                setPadding((6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt())
-                background = StudentStyleHelper.getStyleDrawable(context, "#00000000", "#3338BDF8", 1, 0f)
+                setPadding((6 * density).toInt(), (8 * density).toInt(), (6 * density).toInt(), (8 * density).toInt())
+                background = StudentStyleHelper.getStyleDrawable(context, "#990B0F19", "#3338BDF8", 1, 0f)
                 layoutParams = TableRow.LayoutParams((210 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
             }
 
             val btnDetail = Button(this).apply {
                 text = "Detail"
-                textSize = 10f
+                textSize = 11f
+                setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#38BDF8"))
                 isAllCaps = false
-                layoutParams = LinearLayout.LayoutParams((56 * density).toInt(), (30 * density).toInt())
+                layoutParams = LinearLayout.LayoutParams((60 * density).toInt(), (32 * density).toInt())
                 background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#38BDF8", 1, 6f)
                 setOnClickListener { StudentDialogHelper.showDetailDialog(this@MainActivity, student, baseUrl) }
             }
 
             val btnEdit = Button(this).apply {
                 text = "Edit"
-                textSize = 10f
+                textSize = 11f
+                setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#020617"))
                 isAllCaps = false
-                layoutParams = LinearLayout.LayoutParams((48 * density).toInt(), (30 * density).toInt()).apply {
+                layoutParams = LinearLayout.LayoutParams((52 * density).toInt(), (32 * density).toInt()).apply {
                     setMargins((4 * density).toInt(), 0, (4 * density).toInt(), 0)
                 }
                 background = StudentStyleHelper.getStyleDrawable(context, "", null, 0, 6f, isGradientOrange = true)
@@ -159,10 +161,11 @@ private fun applyStyles() {
 
             val btnDelete = Button(this).apply {
                 text = "Hapus"
-                textSize = 10f
+                textSize = 11f
+                setTypeface(null, Typeface.BOLD)
                 setTextColor(Color.parseColor("#EF4444"))
                 isAllCaps = false
-                layoutParams = LinearLayout.LayoutParams((52 * density).toInt(), (30 * density).toInt())
+                layoutParams = LinearLayout.LayoutParams((56 * density).toInt(), (32 * density).toInt())
                 background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#EF4444", 1, 6f)
                 setOnClickListener { deleteData(student.id) }
             }
@@ -176,15 +179,17 @@ private fun applyStyles() {
         }
     }
 
+    // Fungsi membuat sel tabel dengan teks 14sp bold dan latar belakang tidak terlalu transparan
     private fun createTableCell(text: String, isHeader: Boolean, widthDp: Int, isCenter: Boolean = false): TextView {
         val density = resources.displayMetrics.density
         return TextView(this).apply {
             this.text = text
-            setTextColor(if (isHeader) Color.parseColor("#F59E0B") else Color.parseColor("#F8FAFC"))
-            textSize = 12f
+            setTextColor(if (isHeader) Color.parseColor("#F59E0B") else Color.parseColor("#FFFFFF"))
+            textSize = 14f
+            setTypeface(null, Typeface.BOLD)
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
-            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
-            background = StudentStyleHelper.getStyleDrawable(context, "#00000000", "#3338BDF8", 1, 0f)
+            setPadding((10 * density).toInt(), (10 * density).toInt(), (10 * density).toInt(), (10 * density).toInt())
+            background = StudentStyleHelper.getStyleDrawable(context, "#990B0F19", "#3338BDF8", 1, 0f)
             layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
     }
@@ -195,7 +200,7 @@ private fun applyStyles() {
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
 
-        dialogView.findViewById<View>(R.id.cardDialogForm).background = StudentStyleHelper.getStyleDrawable(this, "#330F172A", "#F59E0B", 2, 20f)
+        dialogView.findViewById<View>(R.id.cardDialogForm).background = StudentStyleHelper.getStyleDrawable(this, "#E60F172A", "#F59E0B", 2, 20f)
         dialogView.findViewById<View>(R.id.etNis).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.etNama).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.etTempatLahir).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
@@ -242,12 +247,12 @@ private fun applyStyles() {
             .setView(dialogView)
             .create()
 
-    dialog.window?.apply {
-    setBackgroundDrawableResource(android.R.color.transparent)
-    setGravity(Gravity.CENTER)
-    setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // Mengunci agar dialog tidak melebar paksa
-    setDimAmount(0.6f)
-}
+        dialog.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            setGravity(Gravity.CENTER)
+            setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setDimAmount(0.6f)
+        }
 
         btnCancel.setOnClickListener { dialog.dismiss() }
 
