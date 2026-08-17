@@ -56,9 +56,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         baseUrl = prefs.getString("base_url", "") ?: ""
 
-        val userRole = prefs.getString("role", null) 
-            ?: prefs.getString("user_role", "USER") 
-            ?: "USER"
+        val userRole = prefs.getString("user_role", "USER") ?: "USER"
         binding.tvRole.text = userRole.uppercase()
 
         if (baseUrl.isEmpty()) {
@@ -377,67 +375,79 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDetailDialog(student: Student) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
+    val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
 
-        dialogView.findViewById<View>(R.id.cardDialogDetail).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
-        dialogView.findViewById<View>(R.id.vAvatarGlow).background = getStyleDrawable("#00000000", "#F59E0B", 3, 0f, isCircle = true)
-        dialogView.findViewById<View>(R.id.subcardBiodata).background = getStyleDrawable("#0B132B", "#1E293B", 1, 12f)
-        dialogView.findViewById<View>(R.id.btnCloseDetail).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
+    dialogView.findViewById<View>(R.id.cardDialogForm)?.background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
+    
+    val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
+    val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
+    val tvNis = dialogView.findViewById<TextView>(R.id.tvDetailNis)
+    val tvAlamat = dialogView.findViewById<TextView>(R.id.tvDetailAlamat)
+    val tvTtl = dialogView.findViewById<TextView>(R.id.tvDetailTtl)
+    val tvHobi = dialogView.findViewById<TextView>(R.id.tvDetailHobi)
+    val tvCitaCita = dialogView.findViewById<TextView>(R.id.tvDetailCitaCita)
+    val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
 
-        val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
-        val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
-        val tvNis = dialogView.findViewById<TextView>(R.id.tvDetailNis)
-        val tvAlamat = dialogView.findViewById<TextView>(R.id.tvDetailAlamat)
-        val tvTtl = dialogView.findViewById<TextView>(R.id.tvDetailTtl)
-        val tvHobi = dialogView.findViewById<TextView>(R.id.tvDetailHobi)
-        val tvCitaCita = dialogView.findViewById<TextView>(R.id.tvDetailCitaCita)
-        val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
+    val dialog = AlertDialog.Builder(this)
+        .setView(dialogView)
+        .create()
 
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .create()
-
-        dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            setDimAmount(0.4f)
-        }
-
-        tvNis.text = ": ${student.nis}"
-        tvNama.text = ": ${student.nama}"
-        tvAlamat.text = ": ${student.alamat}"
-        
-        val ttlText = "${student.tempatLahir ?: "-"}, ${student.tanggalLahir ?: "-"}"
-        tvTtl.text = ": $ttlText"
-        tvHobi.text = ": ${if (!student.hobi.isNullOrEmpty()) student.hobi else "-"}"
-        tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
-
-        var validBaseUrl = if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
-            "https://$baseUrl"
-        } else {
-            baseUrl
-        }
-        validBaseUrl = validBaseUrl.trimEnd('/')
-
-        val fileName = student.foto ?: ""
-        val cleanFileName = fileName.removePrefix("/").removePrefix("public/uploads/").removePrefix("uploads/")
-        val photoUrl = "$validBaseUrl/public/uploads/$cleanFileName"
-
-        if (cleanFileName.isNotEmpty()) {
-            ivFoto.load(photoUrl) {
-                crossfade(true)
-                transformations(CircleCropTransformation())
-                memoryCachePolicy(CachePolicy.DISABLED)
-                diskCachePolicy(CachePolicy.DISABLED)
-                placeholder(android.R.drawable.ic_menu_gallery)
-                error(android.R.drawable.ic_menu_report_image)
-            }
-        } else {
-            ivFoto.setImageResource(android.R.drawable.ic_menu_gallery)
-        }
-
-        btnClose.setOnClickListener { dialog.dismiss() }
-        dialog.show()
+    dialog.window?.apply {
+        setBackgroundDrawableResource(android.R.color.transparent)
+        setDimAmount(0.4f)
     }
+
+    tvNis.text = ": ${student.nis}"
+    tvNama.text = ": ${student.nama}"
+    tvAlamat.text = ": ${student.alamat}"
+    tvTtl.text = ": ${student.tempatLahir ?: "-"}, ${student.tanggalLahir ?: "-"}"
+    tvHobi.text = ": ${if (!student.hobi.isNullOrEmpty()) student.hobi else "-"}"
+    tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
+
+    // 1. Bersihkan Base URL dari trailing slash
+    var validBaseUrl = if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+        "https://$baseUrl"
+    } else {
+        baseUrl
+    }.trimEnd('/')
+
+    val rawPath = student.foto ?: ""
+
+    if (rawPath.isNotBlank()) {
+        // 2. Jika backend sudah mengembalikan URL lengkap (misal: https://domain.com/uploads/a.png)
+        val finalUrl = if (rawPath.startsWith("http://") || rawPath.startsWith("https://")) {
+            rawPath
+        } else {
+            // Bersihkan prefix berulang & encode karakter spasi/simbol unik
+            val cleanFileName = rawPath.trim()
+                .removePrefix("/")
+                .removePrefix("public/uploads/")
+                .removePrefix("uploads/")
+            
+            // Uri.encode mengubah spasi jadi %20 biar Android gak error
+            "$validBaseUrl/public/uploads/${Uri.encode(cleanFileName)}"
+        }
+
+        // 3. Load menggunakan Coil tanpa mematikan cache & handle error gracefully
+        ivFoto.load(finalUrl) {
+            crossfade(true)
+            transformations(CircleCropTransformation())
+            placeholder(android.R.drawable.ic_menu_gallery)
+            error(android.R.drawable.ic_menu_report_image)
+            listener(
+                onError = { _, result ->
+                    // Logcat ini buat ngecek pasti URL mana yang gagal kalau masih ada troubel
+                    android.util.Log.e("CoilError", "Gagal load gambar: $finalUrl | Cause: ${result.throwable.message}")
+                }
+            )
+        }
+    } else {
+        ivFoto.setImageResource(android.R.drawable.ic_menu_gallery)
+    }
+
+    btnClose.setOnClickListener { dialog.dismiss() }
+    dialog.show()
+}
 
     private fun deleteData(id: String) {
         CoroutineScope(Dispatchers.IO).launch {
