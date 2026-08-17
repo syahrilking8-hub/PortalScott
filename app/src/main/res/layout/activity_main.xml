@@ -208,12 +208,10 @@
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
                             </TableRow>
-
                         </TableLayout>
                     </HorizontalScrollView>
                 </androidx.core.widget.NestedScrollView>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
