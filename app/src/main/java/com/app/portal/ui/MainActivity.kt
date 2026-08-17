@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         baseUrl = prefs.getString("base_url", "") ?: ""
 
         val userRole = prefs.getString("user_role", "USER") ?: "USER"
-        binding.tvRole.text = userRole.uppercase()
+        binding.tvRole.text = "• DASHBOARD $userRole".uppercase()
 
         if (baseUrl.isEmpty()) {
             Toast.makeText(this, "URL Server belum diset!", Toast.LENGTH_SHORT).show()
@@ -240,10 +240,16 @@ class MainActivity : AppCompatActivity() {
             .setView(dialogView)
             .create()
 
-    dialog.window?.apply {
+    dialog.show()
+
+dialog.window?.apply {
     setBackgroundDrawableResource(android.R.color.transparent)
     setGravity(Gravity.CENTER)
-    setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // Mengunci agar dialog tidak melebar paksa
+    
+    // Atur lebar dialog presisi 85% dari lebar layar HP
+    val displayMetrics = resources.displayMetrics
+    val width = (displayMetrics.widthPixels * 0.85).toInt()
+    setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
     setDimAmount(0.6f)
 }
 

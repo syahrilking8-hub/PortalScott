@@ -1,100 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mainRootView"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#020617"
-    android:padding="16dp">
+    android:background="#0F172A"
+    tools:context=".MainActivity">
 
-    <!-- Particles View Latar Belakang -->
-    <com.app.portal.ui.ParticlesView
-        android:id="@+id/particlesView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!-- Background Decoration Glows -->
+    <View
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-50dp"
+        android:layout_marginTop="-50dp"
+        android:background="@drawable/blur_glow_teal" />
 
-    <!-- Top Navigation Bar -->
-    <RelativeLayout
-        android:id="@+id/topBar"
+    <View
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="-50dp"
+        android:background="@drawable/blur_glow_blue" />
+
+    <!-- Top Bar Header -->
+    <LinearLayout
+        android:id="@+id/headerBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="2dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="20dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Portal Data Siswa"
+                android:text="SMK PREMIER"
                 android:textColor="#F8FAFC"
-                android:textSize="28sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/btnRefresh"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@android:drawable/ic_popup_sync"
-                app:tint="#F59E0B" />
+            <TextView
+                android:id="@+id/tvRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• ONLINE DASHBOARD"
+                android:textColor="#38BDF8"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/btnLogout"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:paddingHorizontal="14dp"
-            android:text="Logout"
-            android:textAllCaps="false"
-            android:textColor="#F59E0B"
-            android:textSize="12sp" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tvRole"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/topBar"
-        android:layout_marginBottom="12dp"
-        android:text="• ONLINE DASHBOARD HOST"
-        android:textColor="#38BDF8"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.08" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_glass_icon"
+            android:contentDescription="Logout"
+            android:padding="10dp"
+            android:src="@android:drawable/ic_lock_power_off"
+            app:tint="#EF4444" />
+    </LinearLayout>
 
     <!-- Container Utama Tengah dengan Margin Aman -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tvRole"
+        android:layout_below="@id/headerBar"
         android:gravity="center"
         android:orientation="vertical">
 
-        <!-- Card Wrapper dengan Lebar Maksimal Fleksibel -->
+        <!-- Container Konten Card + Tombol di Tengah Horizontal -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="start"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <!-- Tombol Tambah Siswa Di Luar Card -->
+            <!-- Tombol Tambah Siswa -->
             <Button
                 android:id="@+id/btnAddStudent"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
+                android:layout_gravity="start"
                 android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_glass_primary"
                 android:paddingHorizontal="16dp"
                 android:text="+ Tambah Siswa"
                 android:textAllCaps="false"
@@ -107,78 +105,76 @@
                 android:id="@+id/cardTable"
                 android:layout_width="wrap_content"
                 android:layout_height="360dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/glass_card_border"
                 android:orientation="vertical"
                 android:padding="12dp">
 
-                <FrameLayout
-                    android:id="@+id/layoutTableBorder"
+                <!-- Table Header -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_table_header"
+                    android:orientation="horizontal"
+                    android:paddingVertical="10dp">
+
+                    <TextView
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="NO"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="NIS"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="NAMA LENGKAP"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="KELAS"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="AKSI"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- RecyclerView untuk Data Siswa -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvStudents"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:padding="1dp">
+                    android:clipToPadding="false"
+                    android:paddingTop="4dp"
+                    tools:listitem="@layout/item_student" />
 
-                    <ScrollView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:fillViewport="true"
-                        android:overScrollMode="never"
-                        android:scrollbars="vertical">
-
-                        <HorizontalScrollView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:overScrollMode="never"
-                            android:scrollbars="horizontal">
-
-                            <TableLayout
-                                android:id="@+id/tableStudents"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:stretchColumns="*">
-
-                                <TableRow android:padding="0dp">
-                                    <TextView
-                                        android:layout_width="45dp"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:padding="8dp"
-                                        android:text="NO"
-                                        android:textColor="#F59E0B"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="160dp"
-                                        android:layout_height="wrap_content"
-                                        android:padding="8dp"
-                                        android:text="NAMA SISWA"
-                                        android:textColor="#F59E0B"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="200dp"
-                                        android:layout_height="wrap_content"
-                                        android:padding="8dp"
-                                        android:text="ALAMAT"
-                                        android:textColor="#F59E0B"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="210dp"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:padding="8dp"
-                                        android:text="AKSI"
-                                        android:textColor="#F59E0B"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold" />
-                                </TableRow>
-                            </TableLayout>
-                        </HorizontalScrollView>
-                    </ScrollView>
-                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
 </RelativeLayout>
