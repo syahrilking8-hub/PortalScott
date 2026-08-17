@@ -74,17 +74,12 @@ object StudentDialogHelper {
             .create()
 
         dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            setGravity(Gravity.CENTER)
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setDimAmount(0.5f)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-                attributes.blurBehindRadius = 30
-            }
-        }
-
-        btnClose.setOnClickListener { dialog.dismiss() }
-        dialog.show()
+    setBackgroundDrawableResource(android.R.color.transparent)
+    setGravity(Gravity.CENTER)
+    setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // Bebas melar di landscape
+    setDimAmount(0.5f)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+        attributes.blurBehindRadius = 30
     }
 }

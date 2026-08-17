@@ -240,12 +240,12 @@ class MainActivity : AppCompatActivity() {
             .setView(dialogView)
             .create()
 
-        dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            setGravity(Gravity.CENTER)
-            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setDimAmount(0.6f)
-        }
+    dialog.window?.apply {
+    setBackgroundDrawableResource(android.R.color.transparent)
+    setGravity(Gravity.CENTER)
+    setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // Mengunci agar dialog tidak melebar paksa
+    setDimAmount(0.6f)
+}
 
         btnCancel.setOnClickListener { dialog.dismiss() }
 
