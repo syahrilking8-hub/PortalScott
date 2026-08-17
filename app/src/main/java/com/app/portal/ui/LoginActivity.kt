@@ -35,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private var currentBaseUrl: String = ""
     private val client = OkHttpClient()
+    private var animatorSet: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +54,6 @@ class LoginActivity : AppCompatActivity() {
         val layoutIndicator = findViewById<View>(R.id.layoutIndicator)
         val tvToRegister = findViewById<TextView>(R.id.tvToRegister)
 
-        // Terapkan Background Semi-Transparan (#800F172A) agar sama persis dengan Register
         cardLogin.background = getStyleDrawable("#800F172A", "#F59E0B", 2, 24f)
         etUsername.background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         etPassword.background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
@@ -92,8 +92,10 @@ class LoginActivity : AppCompatActivity() {
             doLogin(username, password)
         }
 
-        // Intro Animation
+        // Safe Intro Animation
         tvIntro.postDelayed({
+            if (isFinishing || isDestroyed) return@postDelayed
+            
             val fadeOutIntro = ObjectAnimator.ofFloat(tvIntro, View.ALPHA, 1f, 0f).apply { duration = 400 }
             val fadeInMain = ObjectAnimator.ofFloat(layoutMain, View.ALPHA, 0f, 1f).apply { duration = 500 }
             
@@ -104,11 +106,16 @@ class LoginActivity : AppCompatActivity() {
                 }
             })
 
-            AnimatorSet().apply {
+            animatorSet = AnimatorSet().apply {
                 play(fadeOutIntro).before(fadeInMain)
                 start()
             }
         }, 1200)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        animatorSet?.cancel()
     }
 
     private fun updateUrlState(hasUrl: Boolean) {
@@ -142,7 +149,6 @@ class LoginActivity : AppCompatActivity() {
             setPadding((24 * density).toInt(), 0, (24 * density).toInt(), 0)
         }
 
-        // Dialog Container dengan background semi-transparan (#800F172A)
         val container = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding((20 * density).toInt(), (20 * density).toInt(), (20 * density).toInt(), (20 * density).toInt())
@@ -228,12 +234,12 @@ class LoginActivity : AppCompatActivity() {
             val text = input.text.toString().trim()
             if (text.isNotEmpty()) {
                 currentBaseUrl = sanitizeUrl(text)
-                prefs.edit().putString("base_url", currentBaseUrl).commit()
+                prefs.edit().putString("base_url", currentBaseUrl).apply()
                 updateUrlState(true)
                 Toast.makeText(this, "Link server tersimpan!", Toast.LENGTH_SHORT).show()
             } else {
                 currentBaseUrl = ""
-                prefs.edit().remove("base_url").commit()
+                prefs.edit().remove("base_url").apply()
                 updateUrlState(false)
                 Toast.makeText(this, "Link server dikosongkan!", Toast.LENGTH_SHORT).show()
             }
@@ -251,8 +257,8 @@ class LoginActivity : AppCompatActivity() {
 
         val endpoint = "${currentBaseUrl}/login"
         val jsonPayload = JSONObject()
-        jsonPayload.put("username", u as Any)
-        jsonPayload.put("password", p as Any)
+        jsonPayload.put("username", u)
+        jsonPayload.put("password", p)
 
         val body = jsonPayload.toString().toRequestBody("application/json".toMediaType())
         val req = Request.Builder().url(endpoint).post(body).build()
@@ -260,6 +266,7 @@ class LoginActivity : AppCompatActivity() {
         client.newCall(req).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
                     btnLogin.isEnabled = true
                     btnLogin.text = "MASUK"
                     Toast.makeText(this@LoginActivity, "Gagal terhubung ke server!", Toast.LENGTH_LONG).show()
@@ -269,13 +276,12 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 val resString = response.body?.string() ?: ""
                 runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
                     btnLogin.isEnabled = true
                     btnLogin.text = "MASUK"
                     if (response.isSuccessful) {
                         try {
                             val jsonRes = JSONObject(resString)
-                            
-                            // Parse role dari JSON response (misal: "role", "user_role", atau dari objek "user")
                             var extractedRole = "USER"
                             if (jsonRes.has("role")) {
                                 extractedRole = jsonRes.optString("role", "USER")
@@ -285,12 +291,10 @@ class LoginActivity : AppCompatActivity() {
                                 extractedRole = jsonRes.getJSONObject("data").optString("role", "USER")
                             }
 
-                            // Simpan role ke SharedPreferences secara instan
-                            prefs.edit().putString("user_role", extractedRole).commit()
+                            prefs.edit().putString("user_role", extractedRole).apply()
 
                         } catch (e: Exception) {
-                            // Jika format JSON tidak sesuai, simpan default "USER"
-                            prefs.edit().putString("user_role", "USER").commit()
+                            prefs.edit().putString("user_role", "USER").apply()
                         }
 
                         Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
