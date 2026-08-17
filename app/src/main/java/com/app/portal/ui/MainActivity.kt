@@ -279,12 +279,14 @@ class MainActivity : AppCompatActivity() {
     btnCancel.setOnClickListener { dialog.dismiss() }
 
     tvDatePicker.setOnClickListener {
-        val cal = Calendar.getInstance()
-        android.app.DatePickerDialog(this, { _, year, month, day ->
-            selectedDate = "$year-${month + 1}-$day"
-            tvDatePicker.text = selectedDate
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
-    }
+    val cal = Calendar.getInstance()
+    android.app.DatePickerDialog(this, { _, year, month, day ->
+        val formattedMonth = String.format(Locale.US, "%02d", month + 1)
+        val formattedDay = String.format(Locale.US, "%02d", day)
+        selectedDate = "$year-$formattedMonth-$formattedDay"
+        tvDatePicker.text = selectedDate
+    }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+}
 
     btnPickFile.setOnClickListener {
         pickImageLauncher.launch("image/*")
@@ -393,7 +395,7 @@ private fun showDetailDialog(student: Student) {
     
     val ttlText = "${student.tempatLahir ?: "-"}, ${student.tanggalLahir ?: "-"}"
     tvTtl.text = ": $ttlText"
-    tvHobi.text = ": ${if (!student.hobi.isNullEmpty()) student.hobi else "-"}"
+    tvHobi.text = ": ${if (!student.hobi.isNullOrEmpty()) student.hobi else "-"}"
     tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
 
     val cleanBaseUrl = baseUrl.trimEnd('/')
