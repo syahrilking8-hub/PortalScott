@@ -121,10 +121,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnLogout.background = getStyleDrawable("#80020617", "#73F59E0B", 2, 8f)
         binding.btnAddStudent.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
-        // Card Tabel 50% Transparan (#800A101F)
         val cardDrawable = getStyleDrawable("#800A101F", "#99F59E0B", 2, 20f)
         binding.cardTable.background = cardDrawable
-        binding.layoutTableBorder.background = getStyleDrawable("#00000000", "#6638BDF8", 1, 8f)
+        binding.layoutTableBorder.background = getStyleDrawable("#00000000", "#33F59E0B", 1, 8f)
 
         val glowAnim = ValueAnimator.ofFloat(0.4f, 0.9f).apply {
             duration = 1500
@@ -175,7 +174,7 @@ class MainActivity : AppCompatActivity() {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
                 setPadding((6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt())
-                background = getStyleDrawable("#00000000", "#6638BDF8", 1, 0f)
+                background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
                 layoutParams = TableRow.LayoutParams((210 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
             }
 
@@ -228,7 +227,8 @@ class MainActivity : AppCompatActivity() {
             textSize = 12f
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
             setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
-            background = getStyleDrawable("#00000000", "#6638BDF8", 1, 0f)
+            
+            background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
             layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
     }
@@ -239,18 +239,17 @@ class MainActivity : AppCompatActivity() {
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
 
-        // Ubah background ke 50% Transparan (#800F172A)
         dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
-        dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.tvDatePicker).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etAlamat).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etHobi).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etCitaCita).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.containerInputFile).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.tvDatePicker).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etAlamat).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etHobi).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etCitaCita).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.containerInputFile).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.btnPickFile).background = getStyleDrawable("", null, 0, 6f, isGradientOrange = true)
-        dialogView.findViewById<View>(R.id.btnCancel).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.btnCancel).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.btnSubmit).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
         val tvFormTitle = dialogView.findViewById<TextView>(R.id.tvFormTitle)
@@ -289,6 +288,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
+            setGravity(Gravity.CENTER)
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setDimAmount(0.6f)
         }
@@ -389,8 +389,7 @@ class MainActivity : AppCompatActivity() {
         val vAvatarGlow = dialogView.findViewById<View>(R.id.vAvatarGlow)
         val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
 
-        // Ubah background ke 50% Transparan (#800F172A)
-        cardDialog.background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
+        cardDialog.background = getStyleDrawable("#B30F172A", "#F59E0B", 2, 20f)
         subcardBio.background = getStyleDrawable("#80090D16", "#3338BDF8", 1, 12f)
         vAvatarGlow.background = getStyleDrawable("", null, 0, 0f, isGradientOrange = true, isCircle = true)
         btnClose.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
@@ -435,6 +434,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
+            setGravity(Gravity.CENTER)
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setDimAmount(0.7f) 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
@@ -447,8 +447,31 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    
-    private fun getFileFromUri(uri: Uri): File? {
+    private fun deleteData(id: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Konfirmasi Hapus")
+            .setMessage("Apakah Anda yakin ingin menghapus data siswa ini?")
+            .setPositiveButton("Hapus") { _, _ ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val api = DynamicRetrofitClient.getService(baseUrl)
+                        val response = api.deleteStudent(id)
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, response.message, Toast.LENGTH_SHORT).show()
+                            fetchDataStudents()
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, "Gagal hapus: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+private fun getFileFromUri(uri: Uri): File? {
         return try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
             val tempFile = File.createTempFile("upload_", ".jpg", cacheDir)
@@ -481,34 +504,4 @@ class MainActivity : AppCompatActivity() {
         }
         return result
     }
-}
-
-private fun deleteData(id: String) {
-    // 1. Tampilkan Konfirmasi Hapus Data
-    AlertDialog.Builder(this)
-        .setTitle("Konfirmasi Hapus")
-        .setMessage("Apakah Anda yakin ingin menghapus data siswa ini?")
-        .setPositiveButton("Hapus") { _, _ ->
-            // 2. Eksekusi Request API di Background Thread
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val api = DynamicRetrofitClient.getService(baseUrl)
-                    val textMediaType = "text/plain".toMediaTypeOrNull()
-                    val rbId = id.toRequestBody(textMediaType)
-                    
-                    val response = api.deleteStudent(rbId)
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, response.message, Toast.LENGTH_SHORT).show()
-                        fetchDataStudents() // Refresh data tabel setelah berhasil dihapus
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, "Gagal menghapus: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-        .setNegativeButton("Batal", null)
-        .show()
 }
