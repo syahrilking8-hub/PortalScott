@@ -109,10 +109,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyStyles() {
+        private fun applyStyles() {
         binding.btnLogout.background = getStyleDrawable("#80020617", "#73F59E0B", 2, 8f)
         binding.btnAddStudent.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
-        binding.btnKelolaUser.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
         // Semi transparan pada card utama tabel (#800A101F)
         val cardDrawable = getStyleDrawable("#800A101F", "#99F59E0B", 2, 20f)

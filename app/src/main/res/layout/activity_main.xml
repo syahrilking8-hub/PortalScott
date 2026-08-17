@@ -15,13 +15,13 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <!-- HEADER TOP BAR: Title & Role di Kiri, Logout di Kanan -->
+        <!-- HEADER TOP BAR: Title & Role di Kiri (Lebih Gede), Logout di Kanan -->
         <RelativeLayout
             android:id="@+id/layoutHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
@@ -36,21 +36,21 @@
                     android:layout_height="wrap_content"
                     android:text="Portal Data Siswa"
                     android:textColor="#F8FAFC"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="2dp">
+                    android:layout_marginTop="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ROLE: "
                         android:textColor="#94A3B8"
-                        android:textSize="11sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -59,7 +59,7 @@
                         android:layout_height="wrap_content"
                         android:text="ADMIN"
                         android:textColor="#F59E0B"
-                        android:textSize="11sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
@@ -67,54 +67,36 @@
             <Button
                 android:id="@+id/btnLogout"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="18dp"
                 android:text="Logout"
                 android:textAllCaps="false"
                 android:textColor="#F59E0B"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
         </RelativeLayout>
 
-        <!-- CONTAINER UTAMA -->
+        <!-- CONTAINER UTAMA: Kembali Align Center Vertikal -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layoutHeader"
+            android:layout_centerInParent="true"
             android:layout_marginHorizontal="4dp"
             android:orientation="vertical">
 
-            <!-- Action Bar Tambah Siswa -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
-
-                <Button
-                    android:id="@+id/btnAddStudent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:paddingHorizontal="16dp"
-                    android:text="+ Tambah Siswa"
-                    android:textAllCaps="false"
-                    android:textColor="#020617"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnKelolaUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:paddingHorizontal="14dp"
-                    android:text="👥 Kelola User"
-                    android:textAllCaps="false"
-                    android:textColor="#020617"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+            <!-- Tombol Tambah Siswa (Kelola User Sudah Dihapus Total) -->
+            <Button
+                android:id="@+id/btnAddStudent"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginBottom="12dp"
+                android:paddingHorizontal="18dp"
+                android:text="+ Tambah Siswa"
+                android:textAllCaps="false"
+                android:textColor="#020617"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <!-- Card Tabel Data Siswa -->
             <LinearLayout
@@ -135,7 +117,6 @@
                         android:fillViewport="true"
                         android:overScrollMode="never">
 
-                        <!-- Inner Container Tabel untuk memberikan Outline Emas Tipis -->
                         <LinearLayout
                             android:id="@+id/layoutTableBorder"
                             android:layout_width="wrap_content"
@@ -149,7 +130,6 @@
                                 android:layout_height="wrap_content"
                                 android:stretchColumns="*">
 
-                                <!-- Header Tabel: Ada NO, NAMA SISWA, ALAMAT, AKSI -->
                                 <TableRow
                                     android:background="#1A0F172A"
                                     android:paddingHorizontal="4dp"
