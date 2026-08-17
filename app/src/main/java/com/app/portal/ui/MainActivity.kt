@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         baseUrl = prefs.getString("base_url", "") ?: ""
 
-        // Mengubah teks role 'USER' menjadi kalimat selamat datang
         binding.tvRole.text = "• Selamat Datang di Panel Data Siswa"
 
         if (baseUrl.isEmpty()) {
@@ -89,8 +88,8 @@ class MainActivity : AppCompatActivity() {
         binding.btnLogout.background = StudentStyleHelper.getStyleDrawable(this, "#33020617", "#73F59E0B", 2, 8f)
         binding.btnAddStudent.background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
 
-        // Card dengan background solid-dark (opacity ~60%) dan border emas tebal
-        val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#990F172A", "#F59E0B", 2, 16f)
+        // Card dengan opacity ~60% (#990F172A) & Outline Emas Tebal
+        val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#990F172A", "#F59E0B", 2, 14f)
         binding.cardTable.background = cardDrawable
 
         StudentStyleHelper.applyGlowAnimation(this, cardDrawable)
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity() {
             val actionLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                setPadding((6 * density).toInt(), (8 * density).toInt(), (6 * density).toInt(), (8 * density).toInt())
+                setPadding((4 * density).toInt(), (6 * density).toInt(), (4 * density).toInt(), (6 * density).toInt())
                 background = StudentStyleHelper.getStyleDrawable(context, "#990B0F19", "#3338BDF8", 1, 0f)
                 layoutParams = TableRow.LayoutParams((210 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
             }
@@ -179,7 +178,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Fungsi membuat sel tabel dengan teks 14sp bold dan latar belakang tidak terlalu transparan
     private fun createTableCell(text: String, isHeader: Boolean, widthDp: Int, isCenter: Boolean = false): TextView {
         val density = resources.displayMetrics.density
         return TextView(this).apply {
@@ -188,7 +186,7 @@ class MainActivity : AppCompatActivity() {
             textSize = 14f
             setTypeface(null, Typeface.BOLD)
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
-            setPadding((10 * density).toInt(), (10 * density).toInt(), (10 * density).toInt(), (10 * density).toInt())
+            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
             background = StudentStyleHelper.getStyleDrawable(context, "#990B0F19", "#3338BDF8", 1, 0f)
             layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
@@ -200,7 +198,8 @@ class MainActivity : AppCompatActivity() {
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
 
-        dialogView.findViewById<View>(R.id.cardDialogForm).background = StudentStyleHelper.getStyleDrawable(this, "#E60F172A", "#F59E0B", 2, 20f)
+        // Set Transparansi Card Form Dialog ke 60% (#990F172A)
+        dialogView.findViewById<View>(R.id.cardDialogForm).background = StudentStyleHelper.getStyleDrawable(this, "#990F172A", "#F59E0B", 2, 20f)
         dialogView.findViewById<View>(R.id.etNis).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.etNama).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.etTempatLahir).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
