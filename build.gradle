@@ -12,3 +12,10 @@ buildscript {
 tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
 }
+
+// Menjaga agar seluruh task kompilasi di semua sub-project menggunakan UTF-8
+allprojects {
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}

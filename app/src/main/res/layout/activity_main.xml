@@ -7,13 +7,11 @@
     android:layout_height="match_parent"
     android:background="#090D16">
 
-    <!-- Background Partikel -->
     <com.app.portal.ui.ParticlesView
         android:id="@+id/particlesView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Wrapper Tengah Utama (Pusat Alignment Center Vertikal & Horizontal) -->
     <LinearLayout
         android:id="@+id/centerWrapper"
         android:layout_width="0dp"
@@ -28,7 +26,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Top Header Navigation -->
         <RelativeLayout
             android:id="@+id/topBar"
             android:layout_width="match_parent"
@@ -94,7 +91,6 @@
                 android:textSize="13sp" />
         </RelativeLayout>
 
-        <!-- Top Action Bar: Tambah Siswa & Search Bar (Sejajar dengan Lebar Card) -->
         <LinearLayout
             android:id="@+id/actionContainer"
             android:layout_width="match_parent"
@@ -123,7 +119,7 @@
                 android:id="@+id/etSearch"
                 android:layout_width="180dp"
                 android:layout_height="38dp"
-                android:hint=" Cari nama/NIS..."
+                android:hint="Cari nama/NIS..."
                 android:paddingHorizontal="12dp"
                 android:singleLine="true"
                 android:textColor="#F8FAFC"
@@ -131,7 +127,6 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- Card Wrapper Utama -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardTable"
             android:layout_width="match_parent"
@@ -163,7 +158,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
-                            <!-- Header Tabel: Align Center Semua -->
                             <TableRow
                                 android:background="#1E293B"
                                 android:paddingVertical="10dp">
@@ -208,10 +202,12 @@
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
                             </TableRow>
+
                         </TableLayout>
                     </HorizontalScrollView>
                 </androidx.core.widget.NestedScrollView>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
