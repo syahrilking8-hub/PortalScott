@@ -281,19 +281,25 @@ class LoginActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         try {
                             val jsonRes = JSONObject(resString)
-                            var extractedRole = "USER"
+                            var rawRole = "USER"
                             
+                            // Ekstraksi role secara fleksibel dari berbagai bentuk response JSON
                             if (jsonRes.has("role")) {
-                                extractedRole = jsonRes.getString("role")
+                                rawRole = jsonRes.getString("role")
                             } else if (jsonRes.has("user")) {
-                                extractedRole = jsonRes.getJSONObject("user").optString("role", "USER")
+                                val userObj = jsonRes.getJSONObject("user")
+                                rawRole = userObj.optString("role", userObj.optString("Role", "USER"))
                             } else if (jsonRes.has("data")) {
-                                extractedRole = jsonRes.getJSONObject("data").optString("role", "USER")
+                                val dataObj = jsonRes.getJSONObject("data")
+                                rawRole = dataObj.optString("role", dataObj.optString("Role", "USER"))
                             }
 
+                            val cleanRole = if (rawRole.contains("admin", ignoreCase = true)) "ADMIN" else "USER"
+
+                            // Simpan ke SharedPreferences app_settings agar dibaca MainActivity
                             prefs.edit()
                                 .remove("role")
-                                .putString("user_role", extractedRole)
+                                .putString("user_role", cleanRole)
                                 .apply()
 
                         } catch (e: Exception) {

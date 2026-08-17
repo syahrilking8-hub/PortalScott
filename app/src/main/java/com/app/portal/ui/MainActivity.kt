@@ -12,6 +12,7 @@ import android.provider.OpenableColumns
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -122,7 +123,8 @@ class MainActivity : AppCompatActivity() {
 
         val cardDrawable = getStyleDrawable("#800A101F", "#99F59E0B", 2, 20f)
         binding.cardTable.background = cardDrawable
-        binding.layoutTableBorder.background = getStyleDrawable("#00000000", "#33F59E0B", 1, 8f)
+        // Outline tabel dipertegas
+        binding.layoutTableBorder.background = getStyleDrawable("#00000000", "#6638BDF8", 1, 8f)
 
         val glowAnim = ValueAnimator.ofFloat(0.4f, 0.9f).apply {
             duration = 1500
@@ -173,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
                 setPadding((6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt())
-                background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
+                background = getStyleDrawable("#00000000", "#6638BDF8", 1, 0f)
                 layoutParams = TableRow.LayoutParams((210 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
             }
 
@@ -227,7 +229,8 @@ class MainActivity : AppCompatActivity() {
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
             setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
             
-            background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
+            // Outline sel cyan dipertegas
+            background = getStyleDrawable("#00000000", "#6638BDF8", 1, 0f)
             layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
     }
@@ -238,7 +241,7 @@ class MainActivity : AppCompatActivity() {
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
 
-        dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
+        dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#E60F172A", "#F59E0B", 2, 20f)
         dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
@@ -287,6 +290,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setDimAmount(0.6f)
         }
 
@@ -387,7 +391,7 @@ class MainActivity : AppCompatActivity() {
         val vAvatarGlow = dialogView.findViewById<View>(R.id.vAvatarGlow)
         val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
 
-        cardDialog.background = getStyleDrawable("#B30F172A", "#F59E0B", 2, 20f)
+        cardDialog.background = getStyleDrawable("#E60F172A", "#F59E0B", 2, 20f)
         subcardBio.background = getStyleDrawable("#80090D16", "#3338BDF8", 1, 12f)
         vAvatarGlow.background = getStyleDrawable("", null, 0, 0f, isGradientOrange = true, isCircle = true)
         btnClose.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
@@ -432,6 +436,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setDimAmount(0.7f) 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)

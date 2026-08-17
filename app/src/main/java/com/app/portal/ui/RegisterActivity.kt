@@ -29,7 +29,7 @@ class RegisterActivity : Activity() {
     private lateinit var btnRegister: Button
     private lateinit var tvToLogin: TextView
 
-    private val prefs by lazy { getSharedPreferences("app_prefs", Context.MODE_PRIVATE) }
+    private val prefs by lazy { getSharedPreferences("app_settings", Context.MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +90,6 @@ class RegisterActivity : Activity() {
         etRegPassword.background = inputBg()
         spRegRole.background = inputBg()
 
-        // Register Primary Button
         btnRegister.background = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
             intArrayOf(Color.parseColor("#f59e0b"), Color.parseColor("#d97706"))
@@ -98,14 +97,12 @@ class RegisterActivity : Activity() {
             cornerRadius = 12f * resources.displayMetrics.density
         }
 
-        // Cancel Outline Button
         btnCancel.background = GradientDrawable().apply {
             setColor(Color.parseColor("#B3020617"))
             setStroke(2, Color.parseColor("#73F59E0B"))
             cornerRadius = 12f * resources.displayMetrics.density
         }
 
-        // Card Pulse Animation
         val glowAnim = ValueAnimator.ofFloat(0.4f, 0.9f).apply {
             duration = 1500
             repeatCount = ValueAnimator.INFINITE
@@ -143,7 +140,10 @@ class RegisterActivity : Activity() {
         val baseUrl = prefs.getString("base_url", "") ?: ""
         val username = etRegUsername.text.toString().trim()
         val password = etRegPassword.text.toString().trim()
-        val role = spRegRole.selectedItem.toString()
+        val selectedRoleText = spRegRole.selectedItem.toString()
+
+        // Ambil string murni "ADMIN" / "USER" untuk dikirim ke API
+        val role = if (selectedRoleText.contains("Admin", ignoreCase = true)) "ADMIN" else "USER"
 
         if (baseUrl.isEmpty()) {
             Toast.makeText(this, "URL Base Server belum disetting di halaman Login!", Toast.LENGTH_SHORT).show()

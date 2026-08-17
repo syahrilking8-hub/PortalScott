@@ -1,68 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:overScrollMode="never"
+    android:scrollbars="vertical">
 
     <LinearLayout
-        android:id="@+id/cardDialogForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:background="@drawable/bg_custom">
+        android:gravity="center"
+        android:padding="12dp">
 
-        <TextView
-            android:id="@+id/tvFormTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/cardDialogForm"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tambah Data Siswa"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"/>
+            android:maxWidth="500dp"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <!-- NIS -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NIS" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <EditText android:id="@+id/etNis" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Masukkan NIS" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:background="@drawable/bg_custom" android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/tvFormTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:text="Tambah Data Siswa"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <!-- Nama Siswa -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nama Siswa" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <EditText android:id="@+id/etNama" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Masukkan Nama" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:background="@drawable/bg_custom" android:layout_marginBottom="10dp"/>
+            <!-- NIS -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NIS" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etNis" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Masukkan NIS" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:layout_marginBottom="10dp"/>
 
-        <!-- Tempat Lahir -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tempat Lahir" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <EditText android:id="@+id/etTempatLahir" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Contoh: Bandung" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:background="@drawable/bg_custom" android:layout_marginBottom="10dp"/>
+            <!-- Nama Siswa -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nama Siswa" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etNama" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Masukkan Nama" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:layout_marginBottom="10dp"/>
 
-        <!-- Tanggal Lahir -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tanggal Lahir" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <TextView android:id="@+id/tvDatePicker" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Pilih Tanggal Lahir" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:gravity="center_vertical" android:paddingHorizontal="12dp" android:background="@drawable/bg_custom" android:layout_marginBottom="10dp" android:clickable="true" android:focusable="true"/>
+            <!-- Tempat Lahir -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tempat Lahir" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etTempatLahir" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Contoh: Bandung" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:layout_marginBottom="10dp"/>
 
-        <!-- Alamat -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Alamat" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <EditText android:id="@+id/etAlamat" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Masukkan Alamat" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:background="@drawable/bg_custom" android:layout_marginBottom="10dp"/>
+            <!-- Tanggal Lahir -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tanggal Lahir" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <TextView android:id="@+id/tvDatePicker" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Pilih Tanggal Lahir" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:gravity="center_vertical" android:paddingHorizontal="12dp" android:layout_marginBottom="10dp" android:clickable="true" android:focusable="true"/>
 
-        <!-- Hobi -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hobi" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <EditText android:id="@+id/etHobi" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Contoh: Coding / Editing" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:background="@drawable/bg_custom" android:layout_marginBottom="10dp"/>
+            <!-- Alamat -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Alamat" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etAlamat" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Masukkan Alamat" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:layout_marginBottom="10dp"/>
 
-        <!-- Cita - Cita -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cita – Cita" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <EditText android:id="@+id/etCitaCita" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Contoh: Software Engineer" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:background="@drawable/bg_custom" android:layout_marginBottom="10dp"/>
+            <!-- Hobi -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hobi" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etHobi" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Contoh: Coding / Editing" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:layout_marginBottom="10dp"/>
 
-        <!-- File Upload -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Foto Profil Siswa" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
-        <LinearLayout android:id="@+id/containerInputFile" android:layout_width="match_parent" android:layout_height="42dp" android:orientation="horizontal" android:background="@drawable/bg_custom" android:padding="3dp" android:layout_marginBottom="18dp">
-            <Button android:id="@+id/btnPickFile" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="Pilih File" android:textColor="#020617" android:textSize="10sp" android:textStyle="bold" android:background="@drawable/bg_custom" android:paddingHorizontal="10dp"/>
-            <TextView android:id="@+id/tvFileName" android:layout_width="match_parent" android:layout_height="match_parent" android:text="Tidak ada file yang dipilih" android:textColor="#94A3B8" android:textSize="11sp" android:gravity="center_vertical" android:paddingStart="8dp" android:singleLine="true"/>
+            <!-- Cita - Cita -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cita – Cita" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etCitaCita" android:layout_width="match_parent" android:layout_height="42dp" android:hint="Contoh: Software Engineer" android:textColor="#F8FAFC" android:textColorHint="#475569" android:textSize="12sp" android:paddingHorizontal="12dp" android:layout_marginBottom="10dp"/>
+
+            <!-- File Upload -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Foto Profil Siswa" android:textColor="#94A3B8" android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <LinearLayout android:id="@+id/containerInputFile" android:layout_width="match_parent" android:layout_height="42dp" android:orientation="horizontal" android:padding="3dp" android:layout_marginBottom="18dp">
+                <Button android:id="@+id/btnPickFile" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="Pilih File" android:textColor="#020617" android:textSize="10sp" android:textStyle="bold" android:paddingHorizontal="10dp"/>
+                <TextView android:id="@+id/tvFileName" android:layout_width="match_parent" android:layout_height="match_parent" android:text="Tidak ada file yang dipilih" android:textColor="#94A3B8" android:textSize="11sp" android:gravity="center_vertical" android:paddingStart="8dp" android:singleLine="true"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <Button android:id="@+id/btnCancel" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:text="Batal" android:textColor="#F8FAFC" android:textSize="12sp" android:textStyle="bold" android:textAllCaps="false"/>
+                <Button android:id="@+id/btnSubmit" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:layout_marginStart="4dp" android:text="SIMPAN" android:textColor="#020617" android:textSize="12sp" android:textStyle="bold" android:textAllCaps="true"/>
+            </LinearLayout>
+
         </LinearLayout>
-
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-            <Button android:id="@+id/btnCancel" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:text="Batal" android:textColor="#F8FAFC" android:textSize="12sp" android:textStyle="bold" android:textAllCaps="false" android:background="@drawable/bg_custom"/>
-            <Button android:id="@+id/btnSubmit" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:layout_marginStart="4dp" android:text="SIMPAN" android:textColor="#020617" android:textSize="12sp" android:textStyle="bold" android:textAllCaps="true" android:background="@drawable/bg_custom"/>
-        </LinearLayout>
-
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
