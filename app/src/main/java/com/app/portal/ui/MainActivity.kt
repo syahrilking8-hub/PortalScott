@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
                 text = "Detail"
                 textSize = 11f
                 setTextColor(Color.parseColor("#38BDF8"))
-                textAllCaps = false
+                isAllCaps = false
                 setPadding(0, 0, 0, 0)
                 layoutParams = LinearLayout.LayoutParams((62 * resources.displayMetrics.density).toInt(), (32 * resources.displayMetrics.density).toInt())
                 background = getStyleDrawable("#1E293B", "#38BDF8", 2, 6f)
@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                 text = "Edit"
                 textSize = 11f
                 setTextColor(Color.parseColor("#020617"))
-                textAllCaps = false
+                isAllCaps = false
                 setPadding(0, 0, 0, 0)
                 layoutParams = LinearLayout.LayoutParams((54 * resources.displayMetrics.density).toInt(), (32 * resources.displayMetrics.density).toInt()).apply {
                     setMargins(8, 0, 8, 0)
@@ -196,7 +196,7 @@ class MainActivity : AppCompatActivity() {
                 text = "Hapus"
                 textSize = 11f
                 setTextColor(Color.parseColor("#EF4444"))
-                textAllCaps = false
+                isAllCaps = false
                 setPadding(0, 0, 0, 0)
                 layoutParams = LinearLayout.LayoutParams((58 * resources.displayMetrics.density).toInt(), (32 * resources.displayMetrics.density).toInt())
                 background = getStyleDrawable("#1E293B", "#EF4444", 2, 6f)
