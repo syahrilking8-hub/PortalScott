@@ -389,13 +389,14 @@ class MainActivity : AppCompatActivity() {
         return result
     }
 
-            private fun fetchDataStudents() {
+                private fun fetchDataStudents() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val api = DynamicRetrofitClient.getService(baseUrl)
-                val response = api.getStudents() // Mengembalikan StudentResponse langsung
+                val response = api.getStudents() // Mengembalikan StudentResponse
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccess) {
+                    // Cek status dari response JSON (misal "success" atau "200")
+                    if (response.status == "success" || response.data != null) {
                         masterStudentList = response.data ?: emptyList()
                         populateTable(masterStudentList)
                     } else {
