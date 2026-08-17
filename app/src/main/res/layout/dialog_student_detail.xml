@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxWidth="420dp"
-            android:background="#B30F172A"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="16dp">

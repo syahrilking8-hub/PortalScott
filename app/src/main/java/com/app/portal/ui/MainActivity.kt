@@ -121,9 +121,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnLogout.background = getStyleDrawable("#80020617", "#73F59E0B", 2, 8f)
         binding.btnAddStudent.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
+        // Card Tabel 50% Transparan (#800A101F)
         val cardDrawable = getStyleDrawable("#800A101F", "#99F59E0B", 2, 20f)
         binding.cardTable.background = cardDrawable
-        // Outline tabel dipertegas
         binding.layoutTableBorder.background = getStyleDrawable("#00000000", "#6638BDF8", 1, 8f)
 
         val glowAnim = ValueAnimator.ofFloat(0.4f, 0.9f).apply {
@@ -228,8 +228,6 @@ class MainActivity : AppCompatActivity() {
             textSize = 12f
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
             setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
-            
-            // Outline sel cyan dipertegas
             background = getStyleDrawable("#00000000", "#6638BDF8", 1, 0f)
             layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
@@ -241,17 +239,18 @@ class MainActivity : AppCompatActivity() {
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
 
-        dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#E60F172A", "#F59E0B", 2, 20f)
-        dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.tvDatePicker).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etAlamat).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etHobi).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etCitaCita).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.containerInputFile).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        // Ubah background ke 50% Transparan (#800F172A)
+        dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
+        dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.tvDatePicker).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etAlamat).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etHobi).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etCitaCita).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.containerInputFile).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.btnPickFile).background = getStyleDrawable("", null, 0, 6f, isGradientOrange = true)
-        dialogView.findViewById<View>(R.id.btnCancel).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.btnCancel).background = getStyleDrawable("#800B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.btnSubmit).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
         val tvFormTitle = dialogView.findViewById<TextView>(R.id.tvFormTitle)
@@ -346,7 +345,6 @@ class MainActivity : AppCompatActivity() {
         val rbTempatLahir = tempatLahir.toRequestBody(textMediaType)
         val rbTgl = tglLahir.toRequestBody(textMediaType)
         val rbAlamat = alamat.toRequestBody(textMediaType)
-        val rbHobi = hobi.toRequestBody(textMediaType)
         val rbHobiObj = hobi.toRequestBody(textMediaType)
         val rbCitaCita = citaCita.toRequestBody(textMediaType)
 
@@ -391,7 +389,8 @@ class MainActivity : AppCompatActivity() {
         val vAvatarGlow = dialogView.findViewById<View>(R.id.vAvatarGlow)
         val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
 
-        cardDialog.background = getStyleDrawable("#E60F172A", "#F59E0B", 2, 20f)
+        // Ubah background ke 50% Transparan (#800F172A)
+        cardDialog.background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
         subcardBio.background = getStyleDrawable("#80090D16", "#3338BDF8", 1, 12f)
         vAvatarGlow.background = getStyleDrawable("", null, 0, 0f, isGradientOrange = true, isCircle = true)
         btnClose.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
@@ -448,23 +447,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun deleteData(id: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val api = DynamicRetrofitClient.getService(baseUrl)
-                val response = api.deleteStudent(id)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, response.message, Toast.LENGTH_SHORT).show()
-                    fetchDataStudents()
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, "Gagal hapus: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
+    
     private fun getFileFromUri(uri: Uri): File? {
         return try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)

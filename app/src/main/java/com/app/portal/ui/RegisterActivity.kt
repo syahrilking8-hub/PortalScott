@@ -73,17 +73,17 @@ class RegisterActivity : Activity() {
 
     private fun applyStyles() {
         val cardDrawable = GradientDrawable().apply {
-            setColor(Color.parseColor("#730A101F"))
-            setStroke(3, Color.parseColor("#99F59E0B"))
-            cornerRadius = 28f * resources.displayMetrics.density
+            setColor(Color.parseColor("#800F172A"))
+            setStroke(2, Color.parseColor("#99F59E0B"))
+            cornerRadius = 24f * resources.displayMetrics.density
         }
         cardRegister.background = cardDrawable
 
         val inputBg = {
             GradientDrawable().apply {
-                setColor(Color.parseColor("#80020617"))
-                setStroke(2, Color.parseColor("#73F59E0B"))
-                cornerRadius = 12f * resources.displayMetrics.density
+                setColor(Color.parseColor("#800B132B"))
+                setStroke(1, Color.parseColor("#334155"))
+                cornerRadius = 8f * resources.displayMetrics.density
             }
         }
         etRegUsername.background = inputBg()
@@ -91,16 +91,16 @@ class RegisterActivity : Activity() {
         spRegRole.background = inputBg()
 
         btnRegister.background = GradientDrawable(
-            GradientDrawable.Orientation.TL_BR,
-            intArrayOf(Color.parseColor("#f59e0b"), Color.parseColor("#d97706"))
+            GradientDrawable.Orientation.LEFT_RIGHT,
+            intArrayOf(Color.parseColor("#F59E0B"), Color.parseColor("#D97706"))
         ).apply {
-            cornerRadius = 12f * resources.displayMetrics.density
+            cornerRadius = 10f * resources.displayMetrics.density
         }
 
         btnCancel.background = GradientDrawable().apply {
-            setColor(Color.parseColor("#B3020617"))
-            setStroke(2, Color.parseColor("#73F59E0B"))
-            cornerRadius = 12f * resources.displayMetrics.density
+            setColor(Color.parseColor("#800B132B"))
+            setStroke(1, Color.parseColor("#334155"))
+            cornerRadius = 10f * resources.displayMetrics.density
         }
 
         val glowAnim = ValueAnimator.ofFloat(0.4f, 0.9f).apply {
@@ -110,7 +110,7 @@ class RegisterActivity : Activity() {
             addUpdateListener { anim ->
                 val alphaVal = (anim.animatedValue as Float * 255).toInt()
                 val colorWithAlpha = Color.argb(alphaVal, 245, 158, 11)
-                cardDrawable.setStroke(3, colorWithAlpha)
+                cardDrawable.setStroke((2 * resources.displayMetrics.density).toInt(), colorWithAlpha)
             }
         }
         glowAnim.start()
@@ -142,7 +142,6 @@ class RegisterActivity : Activity() {
         val password = etRegPassword.text.toString().trim()
         val selectedRoleText = spRegRole.selectedItem.toString()
 
-        // Ambil string murni "ADMIN" / "USER" untuk dikirim ke API
         val role = if (selectedRoleText.contains("Admin", ignoreCase = true)) "ADMIN" else "USER"
 
         if (baseUrl.isEmpty()) {

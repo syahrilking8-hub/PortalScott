@@ -1,212 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#020617">
+    android:background="#020617"
+    android:padding="16dp">
 
-    <!-- Background Partikel -->
-    <com.app.portal.ui.ParticlesView
-        android:id="@+id/particlesView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+    <!-- Top Bar Navigation -->
     <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Portal Data Siswa"
+                android:textColor="#F8FAFC"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnRefresh"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@android:drawable/ic_popup_sync"
+                app:tint="#F59E0B" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:paddingHorizontal="14dp"
+            android:text="Logout"
+            android:textAllCaps="false"
+            android:textColor="#F59E0B"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topBar"
+        android:layout_marginBottom="16dp"
+        android:text="ROLE: USER"
+        android:textColor="#F59E0B"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- Container Utama Tengah (Dibuat Presisi Seukuran Card Login) -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="12dp">
+        android:layout_below="@id/tvRole"
+        android:gravity="center">
 
-        <!-- HEADER TOP BAR -->
-        <RelativeLayout
-            android:id="@+id/layoutHeader"
+        <!-- CARD TABEL: Ukuran Maksimal Dibatasi Seperti Login (Max 420dp) -->
+        <LinearLayout
+            android:id="@+id/cardTable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Portal Data Siswa"
-                        android:textColor="#F8FAFC"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/btnRefresh"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Refresh Data"
-                        android:padding="4dp"
-                        android:scaleType="fitCenter"
-                        android:src="@android:drawable/ic_popup_sync"
-                        android:tint="#F59E0B" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ROLE: "
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvRole"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ADMIN"
-                        android:textColor="#F59E0B"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
+            android:maxWidth="420dp"
+            android:maxHeight="380dp"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <Button
-                android:id="@+id/btnLogout"
+                android:id="@+id/btnAddStudent"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:paddingHorizontal="16dp"
-                android:text="Logout"
+                android:layout_marginBottom="12dp"
+                android:paddingHorizontal="14dp"
+                android:text="+ Tambah Siswa"
                 android:textAllCaps="false"
-                android:textColor="#F59E0B"
-                android:textSize="12sp" />
-        </RelativeLayout>
+                android:textColor="#020617"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-        <!-- WRAPPER UTAMA DI TENGAH LAYAR -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/layoutHeader"
-            android:fillViewport="true"
-            android:overScrollMode="never">
-
-            <!-- Container utama yang menarik semuanya ke tengah -->
-            <LinearLayout
+            <!-- Frame Outline Tabel -->
+            <FrameLayout
+                android:id="@+id/layoutTableBorder"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="2dp">
 
-                <!-- Pembungkus ber-Constraint agar maxWidth terkunci aman -->
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <!-- 1. DUAL SCROLL: SCROLL VERTIKAL UTAMA -->
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintWidth_max="600dp">
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    android:overScrollMode="never"
+                    android:scrollbars="vertical">
 
-                    <!-- Tombol Tambah di atas Card Tabel -->
-                    <Button
-                        android:id="@+id/btnAddStudent"
+                    <!-- 2. DUAL SCROLL: SCROLL HORISONTAL DALAM -->
+                    <HorizontalScrollView
                         android:layout_width="wrap_content"
-                        android:layout_height="38dp"
-                        android:layout_marginBottom="8dp"
-                        android:paddingHorizontal="16dp"
-                        android:text="+ Tambah Siswa"
-                        android:textAllCaps="false"
-                        android:textColor="#020617"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <!-- Card Tabel Data Siswa -->
-                    <LinearLayout
-                        android:id="@+id/cardTable"
-                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="vertical"
-                        android:padding="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/btnAddStudent">
+                        android:overScrollMode="never"
+                        android:scrollbars="horizontal">
 
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
+                        <TableLayout
+                            android:id="@+id/tableStudents"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fillViewport="true">
+                            android:stretchColumns="*">
 
-                            <LinearLayout
-                                android:id="@+id/layoutTableBorder"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="1dp">
+                            <!-- Header Tabel Fixed -->
+                            <TableRow android:padding="0dp">
+                                <TextView
+                                    android:layout_width="45dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:padding="8dp"
+                                    android:text="NO"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold" />
 
-                                <TableLayout
-                                    android:id="@+id/tableStudents"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="160dp"
+                                    android:layout_height="wrap_content"
+                                    android:padding="8dp"
+                                    android:text="NAMA SISWA"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold" />
 
-                                    <TableRow
-                                        android:background="#1A0F172A"
-                                        android:paddingHorizontal="4dp"
-                                        android:paddingVertical="6dp">
+                                <TextView
+                                    android:layout_width="200dp"
+                                    android:layout_height="wrap_content"
+                                    android:padding="8dp"
+                                    android:text="ALAMAT"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold" />
 
-                                        <TextView
-                                            android:layout_width="45dp"
-                                            android:gravity="center"
-                                            android:padding="6dp"
-                                            android:text="NO"
-                                            android:textColor="#F59E0B"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:layout_width="160dp"
-                                            android:padding="6dp"
-                                            android:text="NAMA SISWA"
-                                            android:textColor="#F59E0B"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:layout_width="200dp"
-                                            android:padding="6dp"
-                                            android:text="ALAMAT"
-                                            android:textColor="#F59E0B"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:layout_width="210dp"
-                                            android:gravity="center"
-                                            android:padding="6dp"
-                                            android:text="AKSI"
-                                            android:textColor="#F59E0B"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
-                                    </TableRow>
-
-                                </TableLayout>
-                            </LinearLayout>
-                        </HorizontalScrollView>
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-        </ScrollView>
-    </RelativeLayout>
-</FrameLayout>
+                                <TextView
+                                    android:layout_width="210dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:padding="8dp"
+                                    android:text="AKSI"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold" />
+                            </TableRow>
+                        </TableLayout>
+                    </HorizontalScrollView>
+                </ScrollView>
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
