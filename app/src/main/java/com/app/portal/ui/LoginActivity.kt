@@ -53,8 +53,8 @@ class LoginActivity : AppCompatActivity() {
         val layoutIndicator = findViewById<View>(R.id.layoutIndicator)
         val tvToRegister = findViewById<TextView>(R.id.tvToRegister)
 
-        // Terapkan Styling Background Programmatic
-        cardLogin.background = getStyleDrawable("#0F172A", "#F59E0B", 2, 24f)
+        // Terapkan Background Semi-Transparan (#800F172A) agar sama persis dengan Register
+        cardLogin.background = getStyleDrawable("#800F172A", "#F59E0B", 2, 24f)
         etUsername.background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         etPassword.background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         btnLogin.background = getStyleDrawable("", "#F59E0B", 0, 10f, isGradientOrange = true)
@@ -69,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
 
         btnLogoutLink.setOnClickListener {
             currentBaseUrl = ""
-            prefs.edit().remove("base_url").apply()
+            prefs.edit().remove("base_url").remove("user_role").apply()
             updateUrlState(false)
             Toast.makeText(this, "Link Server dihapus", Toast.LENGTH_SHORT).show()
         }
@@ -134,109 +134,115 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showUrlDialog() {
-    // Root container transparan agar overlay dialog tidak berwarna solid
-    val rootLayout = LinearLayout(this).apply {
-        orientation = LinearLayout.VERTICAL
-        gravity = Gravity.CENTER
-        setPadding(40, 0, 40, 0)
-    }
+        val density = resources.displayMetrics.density
 
-    val container = LinearLayout(this).apply {
-        orientation = LinearLayout.VERTICAL
-        setPadding(48, 48, 48, 48)
-        background = getStyleDrawable("#0F172A", "#F59E0B", 2, 20f)
-    }
-
-    val tvTitle = TextView(this).apply {
-        text = "Set URL Server"
-        setTextColor(Color.parseColor("#F8FAFC"))
-        textSize = 18f
-        setTypeface(null, android.graphics.Typeface.BOLD)
-        gravity = Gravity.CENTER
-    }
-    container.addView(tvTitle)
-
-    val tvSub = TextView(this).apply {
-        text = "isi link pada kolom di bawah ini"
-        setTextColor(Color.parseColor("#F59E0B"))
-        textSize = 12f
-        setTypeface(null, android.graphics.Typeface.BOLD)
-        gravity = Gravity.CENTER
-        setPadding(0, 6, 0, 20)
-    }
-    container.addView(tvSub)
-
-    val input = EditText(this).apply {
-        hint = "https://namadomain.com"
-        setTextColor(Color.WHITE)
-        setHintTextColor(Color.parseColor("#475569"))
-        setText(currentBaseUrl)
-        setSingleLine(true)
-        setPadding(30, 24, 30, 24)
-        background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-    }
-    container.addView(input)
-
-    val buttonLayout = LinearLayout(this).apply {
-        orientation = LinearLayout.HORIZONTAL
-        setPadding(0, 24, 0, 0)
-    }
-
-    val btnCancel = Button(this).apply {
-        layoutParams = LinearLayout.LayoutParams(0, 120, 1f).apply { setMargins(0, 0, 12, 0) }
-        text = "Batal"
-        setTextColor(Color.parseColor("#F8FAFC"))
-        textSize = 13f
-        setTypeface(null, android.graphics.Typeface.BOLD)
-        isAllCaps = false
-        background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-    }
-
-    val btnSubmit = Button(this).apply {
-        layoutParams = LinearLayout.LayoutParams(0, 120, 1f).apply { setMargins(12, 0, 0, 0) }
-        text = "Simpan"
-        setTextColor(Color.parseColor("#020617"))
-        textSize = 13f
-        setTypeface(null, android.graphics.Typeface.BOLD)
-        isAllCaps = false
-        background = getStyleDrawable("", "#F59E0B", 0, 8f, isGradientOrange = true)
-    }
-
-    buttonLayout.addView(btnCancel)
-    buttonLayout.addView(btnSubmit)
-    container.addView(buttonLayout)
-    rootLayout.addView(container)
-
-    val dialog = AlertDialog.Builder(this)
-        .setView(rootLayout)
-        .create()
-
-    dialog.window?.apply {
-        setBackgroundDrawableResource(android.R.color.transparent)
-        // Hilangkan background dim bawaan Android agar transparan seperti web
-        setDimAmount(0.4f)
-    }
-
-    btnSubmit.setOnClickListener {
-        val text = input.text.toString().trim()
-        if (text.isNotEmpty()) {
-            currentBaseUrl = sanitizeUrl(text)
-            // Simpan secara sinkron menggunakan commit()
-            prefs.edit().putString("base_url", currentBaseUrl).commit()
-            updateUrlState(true)
-            Toast.makeText(this, "Link server tersimpan!", Toast.LENGTH_SHORT).show()
-        } else {
-            currentBaseUrl = ""
-            prefs.edit().remove("base_url").commit()
-            updateUrlState(false)
-            Toast.makeText(this, "Link server dikosongkan!", Toast.LENGTH_SHORT).show()
+        val rootLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding((24 * density).toInt(), 0, (24 * density).toInt(), 0)
         }
-        dialog.dismiss()
-    }
 
-    btnCancel.setOnClickListener { dialog.dismiss() }
-    dialog.show()
-}
+        // Dialog Container dengan background semi-transparan (#800F172A)
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding((20 * density).toInt(), (20 * density).toInt(), (20 * density).toInt(), (20 * density).toInt())
+            background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
+        }
+
+        val tvTitle = TextView(this).apply {
+            text = "Set URL Server"
+            setTextColor(Color.parseColor("#F8FAFC"))
+            textSize = 18f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            gravity = Gravity.CENTER
+        }
+        container.addView(tvTitle)
+
+        val tvSub = TextView(this).apply {
+            text = "isi link pada kolom di bawah ini"
+            setTextColor(Color.parseColor("#F59E0B"))
+            textSize = 12f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            gravity = Gravity.CENTER
+            setPadding(0, (4 * density).toInt(), 0, (16 * density).toInt())
+        }
+        container.addView(tvSub)
+
+        val input = EditText(this).apply {
+            hint = "https://namadomain.com"
+            setTextColor(Color.WHITE)
+            setHintTextColor(Color.parseColor("#475569"))
+            setText(currentBaseUrl)
+            setSingleLine(true)
+            setPadding((14 * density).toInt(), (10 * density).toInt(), (14 * density).toInt(), (10 * density).toInt())
+            background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        }
+        container.addView(input)
+
+        val buttonLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(0, (20 * density).toInt(), 0, 0)
+        }
+
+        val btnHeight = (42 * density).toInt()
+
+        val btnCancel = Button(this).apply {
+            layoutParams = LinearLayout.LayoutParams(0, btnHeight, 1f).apply {
+                setMargins(0, 0, (6 * density).toInt(), 0)
+            }
+            text = "BATAL"
+            setTextColor(Color.parseColor("#F8FAFC"))
+            textSize = 13f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            isAllCaps = true
+            background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+        }
+
+        val btnSubmit = Button(this).apply {
+            layoutParams = LinearLayout.LayoutParams(0, btnHeight, 1f).apply {
+                setMargins((6 * density).toInt(), 0, 0, 0)
+            }
+            text = "SIMPAN"
+            setTextColor(Color.parseColor("#020617"))
+            textSize = 13f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            isAllCaps = true
+            background = getStyleDrawable("", "#F59E0B", 0, 8f, isGradientOrange = true)
+        }
+
+        buttonLayout.addView(btnCancel)
+        buttonLayout.addView(btnSubmit)
+        container.addView(buttonLayout)
+        rootLayout.addView(container)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(rootLayout)
+            .create()
+
+        dialog.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            setDimAmount(0.3f)
+        }
+
+        btnSubmit.setOnClickListener {
+            val text = input.text.toString().trim()
+            if (text.isNotEmpty()) {
+                currentBaseUrl = sanitizeUrl(text)
+                prefs.edit().putString("base_url", currentBaseUrl).commit()
+                updateUrlState(true)
+                Toast.makeText(this, "Link server tersimpan!", Toast.LENGTH_SHORT).show()
+            } else {
+                currentBaseUrl = ""
+                prefs.edit().remove("base_url").commit()
+                updateUrlState(false)
+                Toast.makeText(this, "Link server dikosongkan!", Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        }
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
 
     private fun doLogin(u: String, p: String) {
         val btnLogin = findViewById<Button>(R.id.btnLogin)
@@ -266,6 +272,27 @@ class LoginActivity : AppCompatActivity() {
                     btnLogin.isEnabled = true
                     btnLogin.text = "MASUK"
                     if (response.isSuccessful) {
+                        try {
+                            val jsonRes = JSONObject(resString)
+                            
+                            // Parse role dari JSON response (misal: "role", "user_role", atau dari objek "user")
+                            var extractedRole = "USER"
+                            if (jsonRes.has("role")) {
+                                extractedRole = jsonRes.optString("role", "USER")
+                            } else if (jsonRes.has("user") && jsonRes.getJSONObject("user").has("role")) {
+                                extractedRole = jsonRes.getJSONObject("user").optString("role", "USER")
+                            } else if (jsonRes.has("data") && jsonRes.getJSONObject("data").has("role")) {
+                                extractedRole = jsonRes.getJSONObject("data").optString("role", "USER")
+                            }
+
+                            // Simpan role ke SharedPreferences secara instan
+                            prefs.edit().putString("user_role", extractedRole).commit()
+
+                        } catch (e: Exception) {
+                            // Jika format JSON tidak sesuai, simpan default "USER"
+                            prefs.edit().putString("user_role", "USER").commit()
+                        }
+
                         Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()

@@ -3,16 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="12dp">
 
-    <!-- Card Utama Dialog -->
     <LinearLayout
         android:id="@+id/cardDialogDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="24dp"
+        android:padding="20dp"
         android:background="@drawable/bg_custom">
 
         <TextView
@@ -20,15 +19,14 @@
             android:layout_height="wrap_content"
             android:text="Biodata Diri Siswa"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Foto Profile -->
         <FrameLayout
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_marginBottom="24dp">
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="18dp">
             
             <View
                 android:id="@+id/vAvatarGlow"
@@ -38,100 +36,71 @@
 
             <ImageView
                 android:id="@+id/ivDetailFoto"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="92dp"
+                android:layout_height="92dp"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"/>
         </FrameLayout>
 
-        <!-- Subcard Table Biodata -->
         <LinearLayout
             android:id="@+id/subcardBiodata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="12dp"
             android:background="@drawable/bg_custom"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="18dp">
 
             <!-- Baris NIS -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingVertical="10dp">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="NIS"
-                    android:textColor="#94A3B8"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:id="@+id/tvDetailNis"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=": -"
-                    android:textColor="#F59E0B"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingVertical="8dp">
+                <TextView android:layout_width="90dp" android:layout_height="wrap_content" android:text="NIS" android:textColor="#94A3B8" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvDetailNis" android:layout_width="match_parent" android:layout_height="wrap_content" android:text=": -" android:textColor="#F59E0B" android:textSize="12sp" android:textStyle="bold"/>
             </LinearLayout>
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1E293B"/>
 
             <!-- Baris NAMA -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingVertical="10dp">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="NAMA"
-                    android:textColor="#94A3B8"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:id="@+id/tvDetailNama"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=": -"
-                    android:textColor="#F8FAFC"
-                    android:textSize="13sp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingVertical="8dp">
+                <TextView android:layout_width="90dp" android:layout_height="wrap_content" android:text="NAMA" android:textColor="#94A3B8" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvDetailNama" android:layout_width="match_parent" android:layout_height="wrap_content" android:text=": -" android:textColor="#F8FAFC" android:textSize="12sp"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1E293B"/>
+
+            <!-- Baris TTL -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingVertical="8dp">
+                <TextView android:layout_width="90dp" android:layout_height="wrap_content" android:text="TTL" android:textColor="#94A3B8" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvDetailTtl" android:layout_width="match_parent" android:layout_height="wrap_content" android:text=": -" android:textColor="#F8FAFC" android:textSize="12sp"/>
             </LinearLayout>
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1E293B"/>
 
             <!-- Baris ALAMAT -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingVertical="10dp">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="ALAMAT"
-                    android:textColor="#94A3B8"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:id="@+id/tvDetailAlamat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=": -"
-                    android:textColor="#F8FAFC"
-                    android:textSize="13sp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingVertical="8dp">
+                <TextView android:layout_width="90dp" android:layout_height="wrap_content" android:text="ALAMAT" android:textColor="#94A3B8" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvDetailAlamat" android:layout_width="match_parent" android:layout_height="wrap_content" android:text=": -" android:textColor="#F8FAFC" android:textSize="12sp"/>
             </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1E293B"/>
+
+            <!-- Baris HOBI -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingVertical="8dp">
+                <TextView android:layout_width="90dp" android:layout_height="wrap_content" android:text="HOBI" android:textColor="#94A3B8" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvDetailHobi" android:layout_width="match_parent" android:layout_height="wrap_content" android:text=": -" android:textColor="#F8FAFC" android:textSize="12sp"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1E293B"/>
+
+            <!-- Baris CITA-CITA -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingVertical="8dp">
+                <TextView android:layout_width="90dp" android:layout_height="wrap_content" android:text="CITA - CITA" android:textColor="#94A3B8" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvDetailCitaCita" android:layout_width="match_parent" android:layout_height="wrap_content" android:text=": -" android:textColor="#F8FAFC" android:textSize="12sp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
-        <!-- Tombol Tutup Biodata -->
         <Button
             android:id="@+id/btnCloseDetail"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="44dp"
             android:text="TUTUP BIODATA"
             android:textColor="#020617"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:textAllCaps="true"
             android:background="@drawable/bg_custom"/>
