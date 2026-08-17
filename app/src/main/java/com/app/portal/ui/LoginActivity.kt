@@ -92,7 +92,6 @@ class LoginActivity : AppCompatActivity() {
             doLogin(username, password)
         }
 
-        // Safe Intro Animation
         tvIntro.postDelayed({
             if (isFinishing || isDestroyed) return@postDelayed
             
@@ -280,33 +279,31 @@ class LoginActivity : AppCompatActivity() {
                     btnLogin.isEnabled = true
                     btnLogin.text = "MASUK"
                     if (response.isSuccessful) {
-    try {
-        val jsonRes = JSONObject(resString)
-        var extractedRole = "USER"
-        
-        // Menyesuaikan struktur JSON response login dari backend
-        if (jsonRes.has("role")) {
-            extractedRole = jsonRes.getString("role")
-        } else if (jsonRes.has("user")) {
-            extractedRole = jsonRes.getJSONObject("user").optString("role", "USER")
-        } else if (jsonRes.has("data")) {
-            extractedRole = jsonRes.getJSONObject("data").optString("role", "USER")
-        }
+                        try {
+                            val jsonRes = JSONObject(resString)
+                            var extractedRole = "USER"
+                            
+                            if (jsonRes.has("role")) {
+                                extractedRole = jsonRes.getString("role")
+                            } else if (jsonRes.has("user")) {
+                                extractedRole = jsonRes.getJSONObject("user").optString("role", "USER")
+                            } else if (jsonRes.has("data")) {
+                                extractedRole = jsonRes.getJSONObject("data").optString("role", "USER")
+                            }
 
-        // Hapus key lama "role" agar tidak bentrok, lalu simpan key baru "user_role"
-        prefs.edit()
-            .remove("role")
-            .putString("user_role", extractedRole)
-            .apply()
+                            prefs.edit()
+                                .remove("role")
+                                .putString("user_role", extractedRole)
+                                .apply()
 
-    } catch (e: Exception) {
-        prefs.edit().putString("user_role", "USER").apply()
-    }
+                        } catch (e: Exception) {
+                            prefs.edit().putString("user_role", "USER").apply()
+                        }
 
-    Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
-    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-    finish()
-} else {
+                        Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    } else {
                         Toast.makeText(this@LoginActivity, "Username/Password Salah!", Toast.LENGTH_LONG).show()
                     }
                 }

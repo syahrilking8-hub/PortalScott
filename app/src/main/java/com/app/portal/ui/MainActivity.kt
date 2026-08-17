@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import coil.load
-import coil.request.CachePolicy
 import coil.transform.CircleCropTransformation
 import com.app.portal.DynamicRetrofitClient
 import com.app.portal.R
@@ -26,8 +25,8 @@ import com.app.portal.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.RequestBody.Companion.asRequestBody // <-- Tambahkan baris ini
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -50,7 +49,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+        
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         applyStyles()
 
         binding.btnLogout.setOnClickListener {
+            prefs.edit().remove("user_role").apply()
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
@@ -284,7 +285,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
-            setDimAmount(0.4f)
+            setDimAmount(0.6f)
         }
 
         btnCancel.setOnClickListener { dialog.dismiss() }
@@ -376,79 +377,73 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDetailDialog(student: Student) {
-    val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
 
-    dialogView.findViewById<View>(R.id.cardDialogForm)?.background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
-    
-    val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
-    val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
-    val tvNis = dialogView.findViewById<TextView>(R.id.tvDetailNis)
-    val tvAlamat = dialogView.findViewById<TextView>(R.id.tvDetailAlamat)
-    val tvTtl = dialogView.findViewById<TextView>(R.id.tvDetailTtl)
-    val tvHobi = dialogView.findViewById<TextView>(R.id.tvDetailHobi)
-    val tvCitaCita = dialogView.findViewById<TextView>(R.id.tvDetailCitaCita)
-    val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
+        val cardDialog = dialogView.findViewById<View>(R.id.cardDialogDetail)
+        val subcardBio = dialogView.findViewById<View>(R.id.subcardBiodata)
+        val vAvatarGlow = dialogView.findViewById<View>(R.id.vAvatarGlow)
+        val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
 
-    val dialog = AlertDialog.Builder(this)
-        .setView(dialogView)
-        .create()
+        cardDialog.background = getStyleDrawable("#0F172A", "#F59E0B", 2, 20f)
+        subcardBio.background = getStyleDrawable("#090D16", "#1E293B", 1, 12f)
+        vAvatarGlow.background = getStyleDrawable("", null, 0, 0f, isGradientOrange = true, isCircle = true)
+        btnClose.background = getStyleDrawable("", null, 0, 10f, isGradientOrange = true)
 
-    dialog.window?.apply {
-        setBackgroundDrawableResource(android.R.color.transparent)
-        setDimAmount(0.4f)
-    }
+        val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
+        val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
+        val tvNis = dialogView.findViewById<TextView>(R.id.tvDetailNis)
+        val tvAlamat = dialogView.findViewById<TextView>(R.id.tvDetailAlamat)
+        val tvTtl = dialogView.findViewById<TextView>(R.id.tvDetailTtl)
+        val tvHobi = dialogView.findViewById<TextView>(R.id.tvDetailHobi)
+        val tvCitaCita = dialogView.findViewById<TextView>(R.id.tvDetailCitaCita)
 
-    tvNis.text = ": ${student.nis}"
-    tvNama.text = ": ${student.nama}"
-    tvAlamat.text = ": ${student.alamat}"
-    tvTtl.text = ": ${student.tempatLahir ?: "-"}, ${student.tanggalLahir ?: "-"}"
-    tvHobi.text = ": ${if (!student.hobi.isNullOrEmpty()) student.hobi else "-"}"
-    tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
+        tvNis.text = ": ${student.nis}"
+        tvNama.text = ": ${student.nama}"
+        tvAlamat.text = ": ${student.alamat}"
+        tvTtl.text = ": ${student.tempatLahir ?: "-"}, ${student.tanggalLahir ?: "-"}"
+        tvHobi.text = ": ${if (!student.hobi.isNullOrEmpty()) student.hobi else "-"}"
+        tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
 
-    // 1. Bersihkan Base URL dari trailing slash
-    var validBaseUrl = if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
-        "https://$baseUrl"
-    } else {
-        baseUrl
-    }.trimEnd('/')
-
-    val rawPath = student.foto ?: ""
-
-    if (rawPath.isNotBlank()) {
-        // 2. Jika backend sudah mengembalikan URL lengkap (misal: https://domain.com/uploads/a.png)
-        val finalUrl = if (rawPath.startsWith("http://") || rawPath.startsWith("https://")) {
-            rawPath
+        val cleanBase = if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+            "https://$baseUrl"
         } else {
-            // Bersihkan prefix berulang & encode karakter spasi/simbol unik
-            val cleanFileName = rawPath.trim()
-                .removePrefix("/")
-                .removePrefix("public/uploads/")
-                .removePrefix("uploads/")
-            
-            // Uri.encode mengubah spasi jadi %20 biar Android gak error
-            "$validBaseUrl/public/uploads/${Uri.encode(cleanFileName)}"
-        }
+            baseUrl
+        }.trimEnd('/')
 
-        // 3. Load menggunakan Coil tanpa mematikan cache & handle error gracefully
-        ivFoto.load(finalUrl) {
-            crossfade(true)
-            transformations(CircleCropTransformation())
-            placeholder(android.R.drawable.ic_menu_gallery)
-            error(android.R.drawable.ic_menu_report_image)
-            listener(
-                onError = { _, result ->
-                    // Logcat ini buat ngecek pasti URL mana yang gagal kalau masih ada troubel
-                    android.util.Log.e("CoilError", "Gagal load gambar: $finalUrl | Cause: ${result.throwable.message}")
+        val rawPath = student.foto ?: ""
+
+        if (rawPath.isNotBlank()) {
+            val trimmedPath = rawPath.trim()
+            val finalUrl = when {
+                trimmedPath.startsWith("http://") || trimmedPath.startsWith("https://") -> trimmedPath
+                else -> {
+                    val fileName = trimmedPath.substringAfterLast('/')
+                    "$cleanBase/uploads/${Uri.encode(fileName)}"
                 }
-            )
-        }
-    } else {
-        ivFoto.setImageResource(android.R.drawable.ic_menu_gallery)
-    }
+            }
 
-    btnClose.setOnClickListener { dialog.dismiss() }
-    dialog.show()
-}
+            ivFoto.load(finalUrl) {
+                crossfade(true)
+                transformations(CircleCropTransformation())
+                placeholder(android.R.drawable.ic_menu_gallery)
+                error(android.R.drawable.ic_menu_report_image)
+            }
+        } else {
+            ivFoto.setImageResource(android.R.drawable.ic_menu_gallery)
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            setDimAmount(0.6f)
+        }
+
+        btnClose.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
 
     private fun deleteData(id: String) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -467,7 +462,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getFileFromUri(uri: Uri): File? {
+private fun getFileFromUri(uri: Uri): File? {
         return try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
             val tempFile = File.createTempFile("upload_", ".jpg", cacheDir)
