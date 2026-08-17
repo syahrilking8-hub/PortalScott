@@ -73,7 +73,7 @@
                     android:background="#2238BDF8"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="2dp"
-                    android:text="• Selamat Datang di Panel Data Siswa"
+                    android:text="â€¢ Selamat Datang di Panel Data Siswa"
                     android:textColor="#38BDF8"
                     android:textSize="11sp"
                     android:textStyle="bold" />
