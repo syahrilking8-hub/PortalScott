@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#020617">
@@ -36,59 +37,61 @@
             android:id="@+id/btnLogoutLink"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="12dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:paddingHorizontal="12dp"
             android:text="Logout Link"
+            android:textAllCaps="false"
             android:textColor="#F59E0B"
             android:textSize="12sp"
-            android:textAllCaps="false"
-            android:paddingHorizontal="12dp"
             android:visibility="gone" />
 
-        <!-- Main Card Scrollable dengan Pembatas Lebar Maksimal -->
+        <!-- Main Card Scrollable -->
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginHorizontal="8dp"
+            android:layout_height="match_parent"
             android:fillViewport="true"
             android:overScrollMode="never">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cardLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxWidth="400dp"
-                    android:orientation="vertical"
-                    android:padding="24dp">
+                    android:padding="24dp"
+                    app:layout_constraintWidth_max="420dp">
 
                     <TextView
+                        android:id="@+id/tvTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="Portal Data Siswa"
                         android:textColor="#f8fafc"
                         android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <!-- Form Section -->
                     <LinearLayout
                         android:id="@+id/formContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_marginTop="12dp"
+                        android:orientation="vertical"
+                        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="12dp"
                             android:text="Username"
                             android:textColor="#94a3b8"
                             android:textSize="13sp"
@@ -109,7 +112,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="14dp"
+                            android:layout_marginTop="12dp"
                             android:text="Password"
                             android:textColor="#94a3b8"
                             android:textSize="13sp"
@@ -131,7 +134,7 @@
                             android:id="@+id/btnLogin"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:layout_marginTop="22dp"
+                            android:layout_marginTop="20dp"
                             android:text="MASUK"
                             android:textColor="#020617"
                             android:textSize="14sp"
@@ -141,14 +144,13 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp">
+                            android:layout_marginTop="16dp">
 
-                            <!-- Indikator Link (Kiri) -->
                             <LinearLayout
                                 android:id="@+id/layoutIndicator"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:clickable="true"
                                 android:focusable="true"
@@ -171,12 +173,11 @@
                                     android:textStyle="bold" />
                             </LinearLayout>
 
-                            <!-- Tombol Sign Up (Kanan) -->
                             <TextView
                                 android:id="@+id/tvToRegister"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
                                 android:text="Sign Up"
                                 android:textColor="#fbbf24"
@@ -185,7 +186,7 @@
                         </RelativeLayout>
 
                     </LinearLayout>
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>

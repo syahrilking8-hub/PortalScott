@@ -273,47 +273,52 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val resString = response.body?.string() ?: ""
-                runOnUiThread {
-                    if (isFinishing || isDestroyed) return@runOnUiThread
-                    btnLogin.isEnabled = true
-                    btnLogin.text = "MASUK"
-                    if (response.isSuccessful) {
-                        try {
-                            val jsonRes = JSONObject(resString)
-                            var rawRole = "USER"
-                            
-                            // Ekstraksi role secara fleksibel dari berbagai bentuk response JSON
-                            if (jsonRes.has("role")) {
-                                rawRole = jsonRes.getString("role")
-                            } else if (jsonRes.has("user")) {
-                                val userObj = jsonRes.getJSONObject("user")
-                                rawRole = userObj.optString("role", userObj.optString("Role", "USER"))
-                            } else if (jsonRes.has("data")) {
-                                val dataObj = jsonRes.getJSONObject("data")
-                                rawRole = dataObj.optString("role", dataObj.optString("Role", "USER"))
-                            }
+    val resString = response.body?.string() ?: ""
+    runOnUiThread {
+        if (isFinishing || isDestroyed) return@runOnUiThread
+        btnLogin.isEnabled = true
+        btnLogin.text = "MASUK"
+        if (response.isSuccessful) {
+            try {
+                val jsonRes = JSONObject(resString)
+                var rawRole = ""
 
-                            val cleanRole = if (rawRole.contains("admin", ignoreCase = true)) "ADMIN" else "USER"
-
-                            // Simpan ke SharedPreferences app_settings agar dibaca MainActivity
-                            prefs.edit()
-                                .remove("role")
-                                .putString("user_role", cleanRole)
-                                .apply()
-
-                        } catch (e: Exception) {
-                            prefs.edit().putString("user_role", "USER").apply()
-                        }
-
-                        Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                        finish()
-                    } else {
-                        Toast.makeText(this@LoginActivity, "Username/Password Salah!", Toast.LENGTH_LONG).show()
-                    }
+                // Cek bertahap semua kemungkinan struktur JSON dari backend
+                if (jsonRes.has("role")) {
+                    rawRole = jsonRes.optString("role", "")
                 }
+                
+                if (rawRole.isEmpty() && jsonRes.has("user")) {
+                    val userObj = jsonRes.optJSONObject("user")
+                    rawRole = userObj?.optString("role", userObj.optString("Role", "")) ?: ""
+                }
+                
+                if (rawRole.isEmpty() && jsonRes.has("data")) {
+                    val dataObj = jsonRes.optJSONObject("data")
+                    rawRole = dataObj?.optString("role", dataObj.optString("Role", "")) ?: ""
+                }
+
+                // Normalisasi string role agar dipastikan terdeteksi ADMIN jika ada kata admin
+                val cleanRole = if (rawRole.trim().equals("ADMIN", ignoreCase = true)) "ADMIN" else "USER"
+
+                // Simpan ke SharedPreferences app_settings agar dibaca MainActivity
+                prefs.edit()
+                    .remove("role")
+                    .putString("user_role", cleanRole)
+                    .apply()
+
+            } catch (e: Exception) {
+                prefs.edit().putString("user_role", "USER").apply()
             }
+
+            Toast.makeText(this@LoginActivity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            finish()
+        } else {
+            Toast.makeText(this@LoginActivity, "Username/Password Salah!", Toast.LENGTH_LONG).show()
+        }
+    }
+}
         })
     }
 
