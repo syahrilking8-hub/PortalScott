@@ -389,16 +389,14 @@ class MainActivity : AppCompatActivity() {
         return result
     }
 
-        private fun fetchDataStudents() {
+            private fun fetchDataStudents() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val api = DynamicRetrofitClient.getService(baseUrl)
-                val response = api.getStudents()
+                val response = api.getStudents() // Mengembalikan StudentResponse langsung
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        // Mengambil body response
-                        val studentResponse = response.body()
-                        masterStudentList = studentResponse?.data ?: emptyList()
+                    if (response.isSuccess) {
+                        masterStudentList = response.data ?: emptyList()
                         populateTable(masterStudentList)
                     } else {
                         Toast.makeText(this@MainActivity, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
