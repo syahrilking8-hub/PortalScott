@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Card Utama Dialog -->
+    <LinearLayout
+        android:id="@+id/cardDialogDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp"
+        android:background="@drawable/bg_custom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Biodata Diri Siswa"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Foto Profile -->
+        <FrameLayout
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginBottom="24dp">
+            
+            <View
+                android:id="@+id/vAvatarGlow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_custom"/>
+
+            <ImageView
+                android:id="@+id/ivDetailFoto"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"/>
+        </FrameLayout>
+
+        <!-- Subcard Table Biodata -->
+        <LinearLayout
+            android:id="@+id/subcardBiodata"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/bg_custom"
+            android:layout_marginBottom="24dp">
+
+            <!-- Baris NIS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="NIS"
+                    android:textColor="#94A3B8"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/tvDetailNis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=": -"
+                    android:textColor="#F59E0B"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1E293B"/>
+
+            <!-- Baris NAMA -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="NAMA"
+                    android:textColor="#94A3B8"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/tvDetailNama"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=": -"
+                    android:textColor="#F8FAFC"
+                    android:textSize="13sp"/>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1E293B"/>
+
+            <!-- Baris ALAMAT -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="ALAMAT"
+                    android:textColor="#94A3B8"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/tvDetailAlamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=": -"
+                    android:textColor="#F8FAFC"
+                    android:textSize="13sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Tombol Tutup Biodata -->
+        <Button
+            android:id="@+id/btnCloseDetail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="TUTUP BIODATA"
+            android:textColor="#020617"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:background="@drawable/bg_custom"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#020617">
+
+    <!-- Background Partikel Melayang -->
+    <com.app.portal.ui.ParticlesView
+        android:id="@+id/particlesView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Container Utama -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- Tombol Logout (Pojok Kanan Atas Layar) -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="Logout"
+            android:textColor="#F59E0B"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:paddingHorizontal="16dp" />
+
+        <!-- Form & Table Container (Card Utama di Tengah Layar) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="8dp"
+            android:orientation="vertical">
+
+            <!-- Tombol + Tambah Siswa (Pojok Kiri Atas Card) -->
+            <Button
+                android:id="@+id/btnAddStudent"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginBottom="12dp"
+                android:text="+ Tambah Siswa"
+                android:textColor="#020617"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:paddingHorizontal="16dp" />
+
+            <!-- Card Tempat Tabel Data Siswa -->
+            <LinearLayout
+                android:id="@+id/cardTable"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Scroll Horizontal & Vertical untuk Tabel Data -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true">
+
+                    <ScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true"
+                        android:overScrollMode="never">
+
+                        <TableLayout
+                            android:id="@+id/tableStudents"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="*">
+
+                            <!-- Header Tabel -->
+                            <TableRow
+                                android:background="#1A0F172A"
+                                android:paddingVertical="10dp"
+                                android:paddingHorizontal="8dp">
+                                <TextView
+                                    android:text="NAMA SISWA"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:padding="8dp"/>
+                                <TextView
+                                    android:text="ALAMAT"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:padding="8dp"/>
+                                <TextView
+                                    android:text="AKSI"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:padding="8dp"
+                                    android:gravity="center"/>
+                            </TableRow>
+
+                        </TableLayout>
+                    </ScrollView>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>
