@@ -482,3 +482,33 @@ class MainActivity : AppCompatActivity() {
         return result
     }
 }
+
+private fun deleteData(id: String) {
+    // 1. Tampilkan Konfirmasi Hapus Data
+    AlertDialog.Builder(this)
+        .setTitle("Konfirmasi Hapus")
+        .setMessage("Apakah Anda yakin ingin menghapus data siswa ini?")
+        .setPositiveButton("Hapus") { _, _ ->
+            // 2. Eksekusi Request API di Background Thread
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val api = DynamicRetrofitClient.getService(baseUrl)
+                    val textMediaType = "text/plain".toMediaTypeOrNull()
+                    val rbId = id.toRequestBody(textMediaType)
+                    
+                    val response = api.deleteStudent(rbId)
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, response.message, Toast.LENGTH_SHORT).show()
+                        fetchDataStudents() // Refresh data tabel setelah berhasil dihapus
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, "Gagal menghapus: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+        .setNegativeButton("Batal", null)
+        .show()
+}
