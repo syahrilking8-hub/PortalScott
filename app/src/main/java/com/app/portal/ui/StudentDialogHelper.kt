@@ -2,7 +2,6 @@ package com.app.portal.ui
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -58,15 +57,14 @@ object StudentDialogHelper {
                 .allowHardware(false)
                 .build()
 
-            // Di StudentDialogHelper.kt
-ivFoto.load(finalUrl, customImageLoader) {
-    crossfade(true)
-    size(120) // Resize resolusi ke ukuran kecil saat dimuat ke memori
-    allowHardware(false)
-    transformations(CircleCropTransformation())
-    placeholder(android.R.drawable.ic_menu_gallery)
-    error(android.R.drawable.ic_menu_report_image)
-}
+            ivFoto.load(finalUrl, customImageLoader) {
+                crossfade(true)
+                size(120)
+                allowHardware(false)
+                transformations(CircleCropTransformation())
+                placeholder(android.R.drawable.ic_menu_gallery)
+                error(android.R.drawable.ic_menu_report_image)
+            }
         } else {
             ivFoto.setImageResource(android.R.drawable.ic_menu_gallery)
         }
@@ -76,12 +74,20 @@ ivFoto.load(finalUrl, customImageLoader) {
             .create()
 
         dialog.window?.apply {
-    setBackgroundDrawableResource(android.R.color.transparent)
-    setGravity(Gravity.CENTER)
-    setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // Bebas melar di landscape
-    setDimAmount(0.5f)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-        attributes.blurBehindRadius = 30
+            setBackgroundDrawableResource(android.R.color.transparent)
+            setGravity(Gravity.CENTER)
+            setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setDimAmount(0.5f)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                attributes.blurBehindRadius = 30
+            }
+        }
+
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }
