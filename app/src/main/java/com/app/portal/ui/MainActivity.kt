@@ -3,6 +3,7 @@ package com.app.portal.ui
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -14,7 +15,6 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.portal.DynamicRetrofitClient
 import com.app.portal.R
 import com.app.portal.Student
@@ -32,9 +32,6 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: StudentAdapter
-    private val studentList = mutableListOf<Student>()
-
     private var selectedImageUri: Uri? = null
     private var selectedDate: String = ""
     private var baseUrl: String = ""
@@ -58,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         baseUrl = prefs.getString("base_url", "") ?: ""
 
         val userRole = prefs.getString("user_role", "USER") ?: "USER"
-        binding.tvRole.text = "• DASHBOARD $userRole".uppercase()
+        binding.tvRole.text = userRole.uppercase()
 
         if (baseUrl.isEmpty()) {
             Toast.makeText(this, "URL Server belum diset!", Toast.LENGTH_SHORT).show()
@@ -67,12 +64,17 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        setupRecyclerView()
+        applyStyles()
 
         binding.btnLogout.setOnClickListener {
             prefs.edit().remove("user_role").apply()
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+        }
+
+        binding.btnRefresh.setOnClickListener {
+            Toast.makeText(this, "Memperbarui data...", Toast.LENGTH_SHORT).show()
+            fetchDataStudents()
         }
 
         binding.btnAddStudent.setOnClickListener {
@@ -82,22 +84,18 @@ class MainActivity : AppCompatActivity() {
         fetchDataStudents()
     }
 
-    private fun setupRecyclerView() {
-        adapter = StudentAdapter(
-            studentList,
-            onDetailClick = { student ->
-                StudentDialogHelper.showDetailDialog(this, student, baseUrl)
-            },
-            onEditClick = { student ->
-                showFormDialog(student)
-            },
-            onDeleteClick = { student ->
-                deleteData(student.id)
-            }
-        )
-        binding.rvStudents.layoutManager = LinearLayoutManager(this)
-        binding.rvStudents.adapter = adapter
-    }
+    // Di MainActivity.kt
+private fun applyStyles() {
+    binding.btnLogout.background = StudentStyleHelper.getStyleDrawable(this, "#33020617", "#73F59E0B", 2, 8f)
+    binding.btnAddStudent.background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
+
+    // Ubah strokeWidthDp menjadi 3 atau 4 agar border card tebal dan jelas
+    val cardDrawable = StudentStyleHelper.getStyleDrawable(this, "#330A101F", "#F59E0B", 3, 20f)
+    binding.cardTable.background = cardDrawable
+    binding.layoutTableBorder.background = StudentStyleHelper.getStyleDrawable(this, "#00000000", "#33F59E0B", 1, 8f)
+
+    StudentStyleHelper.applyGlowAnimation(this, cardDrawable)
+}
 
     private fun fetchDataStudents() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -105,9 +103,7 @@ class MainActivity : AppCompatActivity() {
                 val api = DynamicRetrofitClient.getService(baseUrl)
                 val response = api.getStudents()
                 withContext(Dispatchers.Main) {
-                    studentList.clear()
-                    studentList.addAll(response.data ?: emptyList())
-                    adapter.notifyDataSetChanged()
+                    populateTable(response.data ?: emptyList())
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -117,11 +113,100 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun populateTable(students: List<Student>) {
+        val childCount = binding.tableStudents.childCount
+        if (childCount > 1) {
+            binding.tableStudents.removeViews(1, childCount - 1)
+        }
+
+        students.forEachIndexed { index, student ->
+            val tableRow = TableRow(this)
+
+            tableRow.addView(createTableCell((index + 1).toString(), false, 45, isCenter = true))
+            tableRow.addView(createTableCell(student.nama, false, 160))
+            tableRow.addView(createTableCell(student.alamat, false, 200))
+
+            val density = resources.displayMetrics.density
+            val actionLayout = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER
+                setPadding((6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt())
+                background = StudentStyleHelper.getStyleDrawable(context, "#00000000", "#3338BDF8", 1, 0f)
+                layoutParams = TableRow.LayoutParams((210 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
+            }
+
+            val btnDetail = Button(this).apply {
+                text = "Detail"
+                textSize = 10f
+                setTextColor(Color.parseColor("#38BDF8"))
+                isAllCaps = false
+                layoutParams = LinearLayout.LayoutParams((56 * density).toInt(), (30 * density).toInt())
+                background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#38BDF8", 1, 6f)
+                setOnClickListener { StudentDialogHelper.showDetailDialog(this@MainActivity, student, baseUrl) }
+            }
+
+            val btnEdit = Button(this).apply {
+                text = "Edit"
+                textSize = 10f
+                setTextColor(Color.parseColor("#020617"))
+                isAllCaps = false
+                layoutParams = LinearLayout.LayoutParams((48 * density).toInt(), (30 * density).toInt()).apply {
+                    setMargins((4 * density).toInt(), 0, (4 * density).toInt(), 0)
+                }
+                background = StudentStyleHelper.getStyleDrawable(context, "", null, 0, 6f, isGradientOrange = true)
+                setOnClickListener { showFormDialog(student) }
+            }
+
+            val btnDelete = Button(this).apply {
+                text = "Hapus"
+                textSize = 10f
+                setTextColor(Color.parseColor("#EF4444"))
+                isAllCaps = false
+                layoutParams = LinearLayout.LayoutParams((52 * density).toInt(), (30 * density).toInt())
+                background = StudentStyleHelper.getStyleDrawable(context, "#1E293B", "#EF4444", 1, 6f)
+                setOnClickListener { deleteData(student.id) }
+            }
+
+            actionLayout.addView(btnDetail)
+            actionLayout.addView(btnEdit)
+            actionLayout.addView(btnDelete)
+            tableRow.addView(actionLayout)
+
+            binding.tableStudents.addView(tableRow)
+        }
+    }
+
+    private fun createTableCell(text: String, isHeader: Boolean, widthDp: Int, isCenter: Boolean = false): TextView {
+        val density = resources.displayMetrics.density
+        return TextView(this).apply {
+            this.text = text
+            setTextColor(if (isHeader) Color.parseColor("#F59E0B") else Color.parseColor("#F8FAFC"))
+            textSize = 12f
+            gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
+            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
+            background = StudentStyleHelper.getStyleDrawable(context, "#00000000", "#3338BDF8", 1, 0f)
+            layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
+        }
+    }
+
     private fun showFormDialog(student: Student?) {
         selectedImageUri = null
         selectedDate = student?.tanggalLahir ?: ""
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
+
+        dialogView.findViewById<View>(R.id.cardDialogForm).background = StudentStyleHelper.getStyleDrawable(this, "#330F172A", "#F59E0B", 2, 20f)
+        dialogView.findViewById<View>(R.id.etNis).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etNama).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etTempatLahir).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.tvDatePicker).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etAlamat).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etHobi).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.etCitaCita).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.containerInputFile).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.btnPickFile).background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 6f, isGradientOrange = true)
+        dialogView.findViewById<View>(R.id.btnCancel).background = StudentStyleHelper.getStyleDrawable(this, "#0B132B", "#334155", 1, 8f)
+        dialogView.findViewById<View>(R.id.btnSubmit).background = StudentStyleHelper.getStyleDrawable(this, "", null, 0, 8f, isGradientOrange = true)
 
         val tvFormTitle = dialogView.findViewById<TextView>(R.id.tvFormTitle)
         val etNis = dialogView.findViewById<EditText>(R.id.etNis)
@@ -137,40 +222,36 @@ class MainActivity : AppCompatActivity() {
         val btnSubmit = dialogView.findViewById<Button>(R.id.btnSubmit)
 
         onImagePickedListener = { uri ->
-            tvFileName?.text = getFileName(uri)
+            tvFileName.text = getFileName(uri)
         }
 
         if (student != null) {
-            tvFormTitle?.text = "Edit Data Siswa"
-            etNis?.setText(student.nis)
-            etNama?.setText(student.nama)
-            etTempatLahir?.setText(student.tempatLahir)
-            tvDatePicker?.text = if (selectedDate.isNotEmpty()) selectedDate else "Pilih Tanggal Lahir"
-            etAlamat?.setText(student.alamat)
-            etHobi?.setText(student.hobi)
-            etCitaCita?.setText(student.citaCita)
+            tvFormTitle.text = "Edit Data Siswa"
+            etNis.setText(student.nis)
+            etNama.setText(student.nama)
+            etTempatLahir.setText(student.tempatLahir)
+            tvDatePicker.text = if (selectedDate.isNotEmpty()) selectedDate else "Pilih Tanggal Lahir"
+            etAlamat.setText(student.alamat)
+            etHobi.setText(student.hobi)
+            etCitaCita.setText(student.citaCita)
         } else {
-            tvFormTitle?.text = "Tambah Data Siswa"
+            tvFormTitle.text = "Tambah Data Siswa"
         }
 
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()
 
-        dialog.show()
+    dialog.window?.apply {
+    setBackgroundDrawableResource(android.R.color.transparent)
+    setGravity(Gravity.CENTER)
+    setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) // Mengunci agar dialog tidak melebar paksa
+    setDimAmount(0.6f)
+}
 
-        dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            setGravity(Gravity.CENTER)
-            val displayMetrics = resources.displayMetrics
-            val width = (displayMetrics.widthPixels * 0.85).toInt()
-            setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setDimAmount(0.6f)
-        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
 
-        btnCancel?.setOnClickListener { dialog.dismiss() }
-
-        tvDatePicker?.setOnClickListener {
+        tvDatePicker.setOnClickListener {
             val cal = Calendar.getInstance()
             android.app.DatePickerDialog(this, { _, year, month, day ->
                 val formattedMonth = String.format(Locale.US, "%02d", month + 1)
@@ -180,31 +261,23 @@ class MainActivity : AppCompatActivity() {
             }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        btnPickFile?.setOnClickListener {
+        btnPickFile.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
 
-        btnSubmit?.setOnClickListener {
-            val nisStr = etNis?.text.toString()
-            val namaStr = etNama?.text.toString()
+        btnSubmit.setOnClickListener {
+            val nisStr = etNis.text.toString()
+            val namaStr = etNama.text.toString()
 
             if (nisStr.isEmpty() || namaStr.isEmpty()) {
                 Toast.makeText(this, "NIS dan Nama wajib diisi!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            saveData(
-                student?.id,
-                nisStr,
-                namaStr,
-                etTempatLahir?.text.toString(),
-                selectedDate,
-                etAlamat?.text.toString(),
-                etHobi?.text.toString(),
-                etCitaCita?.text.toString(),
-                dialog
-            )
+            saveData(student?.id, nisStr, namaStr, etTempatLahir.text.toString(), selectedDate, etAlamat.text.toString(), etHobi.text.toString(), etCitaCita.text.toString(), dialog)
         }
+
+        dialog.show()
     }
 
     private fun saveData(
