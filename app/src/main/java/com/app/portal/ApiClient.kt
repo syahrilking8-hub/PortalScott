@@ -9,32 +9,38 @@ import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 interface ApiService {
-    @GET("api/get_students.php")
+    @GET("index.php?action=api_students")
     suspend fun getStudents(): StudentResponse
 
     @Multipart
-    @POST("api/create_student.php")
+    @POST("index.php?action=api_store")
     suspend fun addStudent(
         @Part("nis") nis: RequestBody,
         @Part("nama") nama: RequestBody,
+        @Part("tempat_lahir") tempatLahir: RequestBody,
+        @Part("tgl_lahir") tglLahir: RequestBody,
         @Part("alamat") alamat: RequestBody,
-        @Part("tanggal_lahir") tglLahir: RequestBody,
+        @Part("hobi") hobi: RequestBody,
+        @Part("cita_cita") citaCita: RequestBody,
         @Part foto: MultipartBody.Part?
     ): ApiResponse
 
     @Multipart
-    @POST("api/update_student.php")
+    @POST("index.php?action=api_update")
     suspend fun updateStudent(
         @Part("id") id: RequestBody,
         @Part("nis") nis: RequestBody,
         @Part("nama") nama: RequestBody,
+        @Part("tempat_lahir") tempatLahir: RequestBody,
+        @Part("tgl_lahir") tglLahir: RequestBody,
         @Part("alamat") alamat: RequestBody,
-        @Part("tanggal_lahir") tglLahir: RequestBody,
+        @Part("hobi") hobi: RequestBody,
+        @Part("cita_cita") citaCita: RequestBody,
         @Part foto: MultipartBody.Part?
     ): ApiResponse
 
     @FormUrlEncoded
-    @POST("api/delete_student.php")
+    @POST("index.php?action=api_delete")
     suspend fun deleteStudent(@Field("id") id: String): ApiResponse
 }
 

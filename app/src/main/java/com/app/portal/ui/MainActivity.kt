@@ -221,172 +221,195 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFormDialog(student: Student?) {
-        selectedImageUri = null
-        selectedDate = ""
+    selectedImageUri = null
+    selectedDate = student?.tanggalLahir ?: ""
 
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
-        
-        dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
-        dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.tvDatePicker).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etAlamat).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etHobi).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.etCitaCita).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.containerInputFile).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.btnPickFile).background = getStyleDrawable("", null, 0, 6f, isGradientOrange = true)
-        dialogView.findViewById<View>(R.id.btnCancel).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
-        dialogView.findViewById<View>(R.id.btnSubmit).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
+    val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
+    
+    dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
+    dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.etTempatLahir).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.tvDatePicker).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.etAlamat).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.etHobi).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.etCitaCita).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.containerInputFile).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.btnPickFile).background = getStyleDrawable("", null, 0, 6f, isGradientOrange = true)
+    dialogView.findViewById<View>(R.id.btnCancel).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
+    dialogView.findViewById<View>(R.id.btnSubmit).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
-        val tvFormTitle = dialogView.findViewById<TextView>(R.id.tvFormTitle)
-        val etNis = dialogView.findViewById<EditText>(R.id.etNis)
-        val etNama = dialogView.findViewById<EditText>(R.id.etNama)
-        val tvDatePicker = dialogView.findViewById<TextView>(R.id.tvDatePicker)
-        val etAlamat = dialogView.findViewById<EditText>(R.id.etAlamat)
-        val btnPickFile = dialogView.findViewById<Button>(R.id.btnPickFile)
-        val tvFileName = dialogView.findViewById<TextView>(R.id.tvFileName)
-        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
-        val btnSubmit = dialogView.findViewById<Button>(R.id.btnSubmit)
+    val tvFormTitle = dialogView.findViewById<TextView>(R.id.tvFormTitle)
+    val etNis = dialogView.findViewById<EditText>(R.id.etNis)
+    val etNama = dialogView.findViewById<EditText>(R.id.etNama)
+    val etTempatLahir = dialogView.findViewById<EditText>(R.id.etTempatLahir)
+    val tvDatePicker = dialogView.findViewById<TextView>(R.id.tvDatePicker)
+    val etAlamat = dialogView.findViewById<EditText>(R.id.etAlamat)
+    val etHobi = dialogView.findViewById<EditText>(R.id.etHobi)
+    val etCitaCita = dialogView.findViewById<EditText>(R.id.etCitaCita)
+    val btnPickFile = dialogView.findViewById<Button>(R.id.btnPickFile)
+    val tvFileName = dialogView.findViewById<TextView>(R.id.tvFileName)
+    val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+    val btnSubmit = dialogView.findViewById<Button>(R.id.btnSubmit)
 
-        tvFileNameRef = tvFileName
+    tvFileNameRef = tvFileName
 
-        if (student != null) {
-            tvFormTitle.text = "Edit Data Siswa"
-            etNis.setText(student.nis)
-            etNama.setText(student.nama)
-            etAlamat.setText(student.alamat)
-        } else {
-            tvFormTitle.text = "Tambah Data Siswa"
-        }
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .create()
-
-        dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            setDimAmount(0.4f)
-        }
-
-        btnCancel.setOnClickListener { dialog.dismiss() }
-
-        tvDatePicker.setOnClickListener {
-            val cal = Calendar.getInstance()
-            android.app.DatePickerDialog(this, { _, year, month, day ->
-                selectedDate = "$year-${month + 1}-$day"
-                tvDatePicker.text = selectedDate
-            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
-        }
-
-        btnPickFile.setOnClickListener {
-            pickImageLauncher.launch("image/*")
-        }
-
-        btnSubmit.setOnClickListener {
-            val nisStr = etNis.text.toString()
-            val namaStr = etNama.text.toString()
-            val alamatStr = etAlamat.text.toString()
-
-            if (nisStr.isEmpty() || namaStr.isEmpty()) {
-                Toast.makeText(this, "NIS dan Nama wajib diisi!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            saveData(student?.id, nisStr, namaStr, alamatStr, dialog)
-        }
-
-        dialog.show()
+    if (student != null) {
+        tvFormTitle.text = "Edit Data Siswa"
+        etNis.setText(student.nis)
+        etNama.setText(student.nama)
+        etTempatLahir.setText(student.tempatLahir)
+        tvDatePicker.text = if (selectedDate.isNotEmpty()) selectedDate else "Pilih Tanggal Lahir"
+        etAlamat.setText(student.alamat)
+        etHobi.setText(student.hobi)
+        etCitaCita.setText(student.citaCita)
+    } else {
+        tvFormTitle.text = "Tambah Data Siswa"
     }
 
-    private fun saveData(id: String?, nis: String, nama: String, alamat: String, dialog: AlertDialog) {
-        val rbNis = RequestBody.create("text/plain".toMediaTypeOrNull(), nis)
-        val rbNama = RequestBody.create("text/plain".toMediaTypeOrNull(), nama)
-        val rbAlamat = RequestBody.create("text/plain".toMediaTypeOrNull(), alamat)
-        val rbTgl = RequestBody.create("text/plain".toMediaTypeOrNull(), selectedDate)
+    val dialog = AlertDialog.Builder(this)
+        .setView(dialogView)
+        .create()
 
-        var photoPart: MultipartBody.Part? = null
-        selectedImageUri?.let { uri ->
-            val file = getFileFromUri(uri)
-            if (file != null && file.exists()) {
-                // Gunakan MimeType spesifik file agar tidak ditolak server
-                val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
-                val reqFile = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
-                photoPart = MultipartBody.Part.createFormData("foto", file.name, reqFile)
-            }
+    dialog.window?.apply {
+        setBackgroundDrawableResource(android.R.color.transparent)
+        setDimAmount(0.4f)
+    }
+
+    btnCancel.setOnClickListener { dialog.dismiss() }
+
+    tvDatePicker.setOnClickListener {
+        val cal = Calendar.getInstance()
+        android.app.DatePickerDialog(this, { _, year, month, day ->
+            selectedDate = "$year-${month + 1}-$day"
+            tvDatePicker.text = selectedDate
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+    }
+
+    btnPickFile.setOnClickListener {
+        pickImageLauncher.launch("image/*")
+    }
+
+    btnSubmit.setOnClickListener {
+        val nisStr = etNis.text.toString()
+        val namaStr = etNama.text.toString()
+        val tempatLahirStr = etTempatLahir.text.toString()
+        val alamatStr = etAlamat.text.toString()
+        val hobiStr = etHobi.text.toString()
+        val citaCitaStr = etCitaCita.text.toString()
+
+        if (nisStr.isEmpty() || namaStr.isEmpty()) {
+            Toast.makeText(this, "NIS dan Nama wajib diisi!", Toast.LENGTH_SHORT).show()
+            return@setOnClickListener
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val api = DynamicRetrofitClient.getService(baseUrl)
-                val response = if (id == null) {
-                    api.addStudent(rbNis, rbNama, rbAlamat, rbTgl, photoPart)
-                } else {
-                    val rbId = RequestBody.create("text/plain".toMediaTypeOrNull(), id)
-                    api.updateStudent(rbId, rbNis, rbNama, rbAlamat, rbTgl, photoPart)
-                }
+        saveData(student?.id, nisStr, namaStr, tempatLahirStr, selectedDate, alamatStr, hobiStr, citaCitaStr, dialog)
+    }
 
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, response.message, Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                    fetchDataStudents()
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
+    dialog.show()
+}
+
+private fun saveData(
+    id: String?,
+    nis: String,
+    nama: String,
+    tempatLahir: String,
+    tglLahir: String,
+    alamat: String,
+    hobi: String,
+    citaCita: String,
+    dialog: AlertDialog
+) {
+    val rbNis = RequestBody.create("text/plain".toMediaTypeOrNull(), nis)
+    val rbNama = RequestBody.create("text/plain".toMediaTypeOrNull(), nama)
+    val rbTempatLahir = RequestBody.create("text/plain".toMediaTypeOrNull(), tempatLahir)
+    val rbTgl = RequestBody.create("text/plain".toMediaTypeOrNull(), tglLahir)
+    val rbAlamat = RequestBody.create("text/plain".toMediaTypeOrNull(), alamat)
+    val rbHobi = RequestBody.create("text/plain".toMediaTypeOrNull(), hobi)
+    val rbCitaCita = RequestBody.create("text/plain".toMediaTypeOrNull(), citaCita)
+
+    var photoPart: MultipartBody.Part? = null
+    selectedImageUri?.let { uri ->
+        val file = getFileFromUri(uri)
+        if (file != null && file.exists()) {
+            val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
+            val reqFile = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
+            photoPart = MultipartBody.Part.createFormData("foto", file.name, reqFile)
         }
     }
 
-    private fun showDetailDialog(student: Student) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val api = DynamicRetrofitClient.getService(baseUrl)
+            val response = if (id == null) {
+                api.addStudent(rbNis, rbNama, rbTempatLahir, rbTgl, rbAlamat, rbHobi, rbCitaCita, photoPart)
+            } else {
+                val rbId = RequestBody.create("text/plain".toMediaTypeOrNull(), id)
+                api.updateStudent(rbId, rbNis, rbNama, rbTempatLahir, rbTgl, rbAlamat, rbHobi, rbCitaCita, photoPart)
+            }
 
-        dialogView.findViewById<View>(R.id.cardDialogDetail).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
-        dialogView.findViewById<View>(R.id.vAvatarGlow).background = getStyleDrawable("#00000000", "#F59E0B", 3, 0f, isCircle = true)
-        dialogView.findViewById<View>(R.id.subcardBiodata).background = getStyleDrawable("#0B132B", "#1E293B", 1, 12f)
-        dialogView.findViewById<View>(R.id.btnCloseDetail).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
-
-        val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
-        val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
-        val tvNis = dialogView.findViewById<TextView>(R.id.tvDetailNis)
-        val tvAlamat = dialogView.findViewById<TextView>(R.id.tvDetailAlamat)
-        val tvTtl = dialogView.findViewById<TextView>(R.id.tvDetailTtl)
-        val tvHobi = dialogView.findViewById<TextView>(R.id.tvDetailHobi)
-        val tvCitaCita = dialogView.findViewById<TextView>(R.id.tvDetailCitaCita)
-        val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .create()
-
-        dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            setDimAmount(0.4f)
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, response.message, Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+                fetchDataStudents()
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
-
-        tvNis.text = ": ${student.nis}"
-        tvNama.text = ": ${student.nama}"
-        tvAlamat.text = ": ${student.alamat}"
-        tvTtl.text = ": -"
-        tvHobi.text = ": -"
-        tvCitaCita.text = ": -"
-
-        // Susun URL mengarah tepat ke public/uploads/
-        val cleanBaseUrl = baseUrl.trimEnd('/')
-        val fileName = student.foto ?: ""
-        val photoUrl = "$cleanBaseUrl/public/uploads/$fileName"
-
-        ivFoto.load(photoUrl) {
-            crossfade(true)
-            transformations(CircleCropTransformation())
-            placeholder(android.R.drawable.ic_menu_gallery)
-            error(android.R.drawable.ic_menu_report_image)
-        }
-
-        btnClose.setOnClickListener { dialog.dismiss() }
-        dialog.show()
     }
+}
+
+private fun showDetailDialog(student: Student) {
+    val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
+
+    dialogView.findViewById<View>(R.id.cardDialogDetail).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
+    dialogView.findViewById<View>(R.id.vAvatarGlow).background = getStyleDrawable("#00000000", "#F59E0B", 3, 0f, isCircle = true)
+    dialogView.findViewById<View>(R.id.subcardBiodata).background = getStyleDrawable("#0B132B", "#1E293B", 1, 12f)
+    dialogView.findViewById<View>(R.id.btnCloseDetail).background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
+
+    val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
+    val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
+    val tvNis = dialogView.findViewById<TextView>(R.id.tvDetailNis)
+    val tvAlamat = dialogView.findViewById<TextView>(R.id.tvDetailAlamat)
+    val tvTtl = dialogView.findViewById<TextView>(R.id.tvDetailTtl)
+    val tvHobi = dialogView.findViewById<TextView>(R.id.tvDetailHobi)
+    val tvCitaCita = dialogView.findViewById<TextView>(R.id.tvDetailCitaCita)
+    val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
+
+    val dialog = AlertDialog.Builder(this)
+        .setView(dialogView)
+        .create()
+
+    dialog.window?.apply {
+        setBackgroundDrawableResource(android.R.color.transparent)
+        setDimAmount(0.4f)
+    }
+
+    tvNis.text = ": ${student.nis}"
+    tvNama.text = ": ${student.nama}"
+    tvAlamat.text = ": ${student.alamat}"
+    
+    val ttlText = "${student.tempatLahir ?: "-"}, ${student.tanggalLahir ?: "-"}"
+    tvTtl.text = ": $ttlText"
+    tvHobi.text = ": ${if (!student.hobi.isNullEmpty()) student.hobi else "-"}"
+    tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
+
+    val cleanBaseUrl = baseUrl.trimEnd('/')
+    val fileName = student.foto ?: ""
+    val photoUrl = "$cleanBaseUrl/public/uploads/$fileName"
+
+    ivFoto.load(photoUrl) {
+        crossfade(true)
+        transformations(CircleCropTransformation())
+        placeholder(android.R.drawable.ic_menu_gallery)
+        error(android.R.drawable.ic_menu_report_image)
+    }
+
+    btnClose.setOnClickListener { dialog.dismiss() }
+    dialog.show()
+}
 
     private fun deleteData(id: String) {
         CoroutineScope(Dispatchers.IO).launch {
