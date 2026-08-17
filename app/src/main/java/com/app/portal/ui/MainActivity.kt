@@ -45,40 +45,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    WindowCompat.setDecorFitsSystemWindows(window, false)
-    binding = ActivityMainBinding.inflate(layoutInflater)
-    setContentView(binding.root)
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
-    baseUrl = prefs.getString("base_url", "") ?: ""
+        val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        baseUrl = prefs.getString("base_url", "") ?: ""
 
-    // 1. AMBIL DATA ROLE DARI PREFERENCES (Default: "USER")
-    val userRole = prefs.getString("user_role", "USER") ?: "USER"
+        val userRole = prefs.getString("user_role", "USER") ?: "USER"
+        binding.tvRole.text = userRole.uppercase()
 
-    // 2. SET TEKS ROLE SECARA DINAMIS (Ubah jadi Uppercase agar konsisten)
-    binding.tvRole.text = userRole.uppercase()
+        if (baseUrl.isEmpty()) {
+            Toast.makeText(this, "URL Server belum diset! Silakan login ulang.", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
 
-    if (baseUrl.isEmpty()) {
-        Toast.makeText(this, "URL Server belum diset! Silakan login ulang.", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
-        return
+        applyStyles()
+
+        binding.btnLogout.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+
+        binding.btnAddStudent.setOnClickListener {
+            showFormDialog(null)
+        }
+
+        fetchDataStudents()
     }
-
-    applyStyles()
-
-    binding.btnLogout.setOnClickListener {
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
-    }
-
-    binding.btnAddStudent.setOnClickListener {
-        showFormDialog(null)
-    }
-
-    fetchDataStudents()
-}
 
     private fun getStyleDrawable(
         bgColor: String,
@@ -109,15 +106,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-        private fun applyStyles() {
+    private fun applyStyles() {
         binding.btnLogout.background = getStyleDrawable("#80020617", "#73F59E0B", 2, 8f)
         binding.btnAddStudent.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
-        // Semi transparan pada card utama tabel (#800A101F)
         val cardDrawable = getStyleDrawable("#800A101F", "#99F59E0B", 2, 20f)
         binding.cardTable.background = cardDrawable
-
-        // Outline tipis emas pada container tabel internal
         binding.layoutTableBorder.background = getStyleDrawable("#00000000", "#33F59E0B", 1, 8f)
 
         val glowAnim = ValueAnimator.ofFloat(0.4f, 0.9f).apply {
@@ -160,14 +154,10 @@ class MainActivity : AppCompatActivity() {
                 setPadding(0, 0, 0, 0)
             }
 
-            // Kolom Nomor (NO)
             tableRow.addView(createTableCell((index + 1).toString(), false, isCenter = true))
-            
-            // Kolom NAMA & ALAMAT
             tableRow.addView(createTableCell(student.nama, false))
             tableRow.addView(createTableCell(student.alamat, false))
 
-            // Kolom AKSI
             val actionLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
@@ -236,7 +226,6 @@ class MainActivity : AppCompatActivity() {
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_form, null)
         
-        // Dynamic Styling Form Dialog dengan Warna Semi-Transparan (#800F172A) & Border Emas
         dialogView.findViewById<View>(R.id.cardDialogForm).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
         dialogView.findViewById<View>(R.id.etNis).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
         dialogView.findViewById<View>(R.id.etNama).background = getStyleDrawable("#0B132B", "#334155", 1, 8f)
@@ -253,11 +242,8 @@ class MainActivity : AppCompatActivity() {
         val tvFormTitle = dialogView.findViewById<TextView>(R.id.tvFormTitle)
         val etNis = dialogView.findViewById<EditText>(R.id.etNis)
         val etNama = dialogView.findViewById<EditText>(R.id.etNama)
-        val etTempatLahir = dialogView.findViewById<EditText>(R.id.etTempatLahir)
         val tvDatePicker = dialogView.findViewById<TextView>(R.id.tvDatePicker)
         val etAlamat = dialogView.findViewById<EditText>(R.id.etAlamat)
-        val etHobi = dialogView.findViewById<EditText>(R.id.etHobi)
-        val etCitaCita = dialogView.findViewById<EditText>(R.id.etCitaCita)
         val btnPickFile = dialogView.findViewById<Button>(R.id.btnPickFile)
         val tvFileName = dialogView.findViewById<TextView>(R.id.tvFileName)
         val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
@@ -322,8 +308,10 @@ class MainActivity : AppCompatActivity() {
         var photoPart: MultipartBody.Part? = null
         selectedImageUri?.let { uri ->
             val file = getFileFromUri(uri)
-            if (file != null) {
-                val reqFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+            if (file != null && file.exists()) {
+                // Gunakan MimeType spesifik file agar tidak ditolak server
+                val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
+                val reqFile = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
                 photoPart = MultipartBody.Part.createFormData("foto", file.name, reqFile)
             }
         }
@@ -354,7 +342,6 @@ class MainActivity : AppCompatActivity() {
     private fun showDetailDialog(student: Student) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_student_detail, null)
 
-        // Dynamic Styling Detail Dialog (Semi Transparan #800F172A)
         dialogView.findViewById<View>(R.id.cardDialogDetail).background = getStyleDrawable("#800F172A", "#F59E0B", 2, 20f)
         dialogView.findViewById<View>(R.id.vAvatarGlow).background = getStyleDrawable("#00000000", "#F59E0B", 3, 0f, isCircle = true)
         dialogView.findViewById<View>(R.id.subcardBiodata).background = getStyleDrawable("#0B132B", "#1E293B", 1, 12f)
@@ -385,11 +372,15 @@ class MainActivity : AppCompatActivity() {
         tvHobi.text = ": -"
         tvCitaCita.text = ": -"
 
-        val cleanUrl = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
-        val photoUrl = "${cleanUrl}public/uploads/${student.foto}"
+        // Susun URL mengarah tepat ke public/uploads/
+        val cleanBaseUrl = baseUrl.trimEnd('/')
+        val fileName = student.foto ?: ""
+        val photoUrl = "$cleanBaseUrl/public/uploads/$fileName"
 
         ivFoto.load(photoUrl) {
+            crossfade(true)
             transformations(CircleCropTransformation())
+            placeholder(android.R.drawable.ic_menu_gallery)
             error(android.R.drawable.ic_menu_report_image)
         }
 
@@ -415,9 +406,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFileFromUri(uri: Uri): File? {
-        val fileName = getFileName(uri) ?: "temp_image.jpg"
-        val tempFile = File(cacheDir, fileName)
         return try {
+            val timeStamp = System.currentTimeMillis()
+            val tempFile = File(cacheDir, "upload_$timeStamp.jpg")
+            
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 FileOutputStream(tempFile).use { outputStream ->
                     inputStream.copyTo(outputStream)
@@ -425,6 +417,7 @@ class MainActivity : AppCompatActivity() {
             }
             tempFile
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }
