@@ -390,25 +390,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchDataStudents() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val api = DynamicRetrofitClient.getService(baseUrl)
-                val response = api.getStudents()
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccess) {
-                        masterStudentList = response.data ?: emptyList()
-                        populateTable(masterStudentList)
-                    } else {
-                        Toast.makeText(this@MainActivity, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
-                    }
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val api = DynamicRetrofitClient.getService(baseUrl)
+            val response = api.getStudents()
+            withContext(Dispatchers.Main) {
+                // Menggunakan response.success (atau sesuaikan dengan file StudentResponse/ApiResponse kamu)
+                if (response.success) { 
+                    masterStudentList = response.data ?: emptyList()
+                    populateTable(masterStudentList)
+                } else {
+                    Toast.makeText(this@MainActivity, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
+}
 
     private fun filterTableData(query: String) {
         val filteredList = if (query.isEmpty()) {
