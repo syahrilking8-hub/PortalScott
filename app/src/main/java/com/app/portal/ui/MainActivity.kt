@@ -164,36 +164,36 @@ class MainActivity : AppCompatActivity() {
                 setPadding(0, 0, 0, 0)
             }
 
-            tableRow.addView(createTableCell((index + 1).toString(), false, isCenter = true))
-            tableRow.addView(createTableCell(student.nama, false))
-            tableRow.addView(createTableCell(student.alamat, false))
+            tableRow.addView(createTableCell((index + 1).toString(), false, 45, isCenter = true))
+            tableRow.addView(createTableCell(student.nama, false, 160))
+            tableRow.addView(createTableCell(student.alamat, false, 200))
 
+            val density = resources.displayMetrics.density
             val actionLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                setPadding(12, 10, 12, 10)
-                background = getStyleDrawable("#00000000", "#1E293B", 1, 0f)
+                setPadding((6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt(), (6 * density).toInt())
+                background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
+                layoutParams = TableRow.LayoutParams((210 * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
             }
 
             val btnDetail = Button(this).apply {
                 text = "Detail"
-                textSize = 11f
+                textSize = 10f
                 setTextColor(Color.parseColor("#38BDF8"))
                 isAllCaps = false
-                setPadding(0, 0, 0, 0)
-                layoutParams = LinearLayout.LayoutParams((60 * resources.displayMetrics.density).toInt(), (32 * resources.displayMetrics.density).toInt())
-                background = getStyleDrawable("#1E293B", "#38BDF8", 2, 6f)
+                layoutParams = LinearLayout.LayoutParams((56 * density).toInt(), (30 * density).toInt())
+                background = getStyleDrawable("#1E293B", "#38BDF8", 1, 6f)
                 setOnClickListener { showDetailDialog(student) }
             }
 
             val btnEdit = Button(this).apply {
                 text = "Edit"
-                textSize = 11f
+                textSize = 10f
                 setTextColor(Color.parseColor("#020617"))
                 isAllCaps = false
-                setPadding(0, 0, 0, 0)
-                layoutParams = LinearLayout.LayoutParams((52 * resources.displayMetrics.density).toInt(), (32 * resources.displayMetrics.density).toInt()).apply {
-                    setMargins(6, 0, 6, 0)
+                layoutParams = LinearLayout.LayoutParams((48 * density).toInt(), (30 * density).toInt()).apply {
+                    setMargins((4 * density).toInt(), 0, (4 * density).toInt(), 0)
                 }
                 background = getStyleDrawable("", null, 0, 6f, isGradientOrange = true)
                 setOnClickListener { showFormDialog(student) }
@@ -201,12 +201,11 @@ class MainActivity : AppCompatActivity() {
 
             val btnDelete = Button(this).apply {
                 text = "Hapus"
-                textSize = 11f
+                textSize = 10f
                 setTextColor(Color.parseColor("#EF4444"))
                 isAllCaps = false
-                setPadding(0, 0, 0, 0)
-                layoutParams = LinearLayout.LayoutParams((56 * resources.displayMetrics.density).toInt(), (32 * resources.displayMetrics.density).toInt())
-                background = getStyleDrawable("#1E293B", "#EF4444", 2, 6f)
+                layoutParams = LinearLayout.LayoutParams((52 * density).toInt(), (30 * density).toInt())
+                background = getStyleDrawable("#1E293B", "#EF4444", 1, 6f)
                 setOnClickListener { deleteData(student.id) }
             }
 
@@ -219,14 +218,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createTableCell(text: String, isHeader: Boolean, isCenter: Boolean = false): TextView {
+    private fun createTableCell(text: String, isHeader: Boolean, widthDp: Int, isCenter: Boolean = false): TextView {
+        val density = resources.displayMetrics.density
         return TextView(this).apply {
             this.text = text
             setTextColor(if (isHeader) Color.parseColor("#F59E0B") else Color.parseColor("#F8FAFC"))
-            textSize = 13f
+            textSize = 12f
             gravity = if (isCenter) Gravity.CENTER else Gravity.CENTER_VERTICAL
-            setPadding(16, 12, 16, 12)
-            background = getStyleDrawable("#00000000", "#1E293B", 1, 0f)
+            padding = (8 * density).toInt()
+            
+            background = getStyleDrawable("#00000000", "#3338BDF8", 1, 0f)
+            layoutParams = TableRow.LayoutParams((widthDp * density).toInt(), TableRow.LayoutParams.MATCH_PARENT)
         }
     }
 
@@ -384,10 +386,10 @@ class MainActivity : AppCompatActivity() {
         val vAvatarGlow = dialogView.findViewById<View>(R.id.vAvatarGlow)
         val btnClose = dialogView.findViewById<Button>(R.id.btnCloseDetail)
 
-        cardDialog.background = getStyleDrawable("#0F172A", "#F59E0B", 2, 20f)
-        subcardBio.background = getStyleDrawable("#090D16", "#1E293B", 1, 12f)
+        cardDialog.background = getStyleDrawable("#B30F172A", "#F59E0B", 2, 20f)
+        subcardBio.background = getStyleDrawable("#80090D16", "#3338BDF8", 1, 12f)
         vAvatarGlow.background = getStyleDrawable("", null, 0, 0f, isGradientOrange = true, isCircle = true)
-        btnClose.background = getStyleDrawable("", null, 0, 10f, isGradientOrange = true)
+        btnClose.background = getStyleDrawable("", null, 0, 8f, isGradientOrange = true)
 
         val ivFoto = dialogView.findViewById<ImageView>(R.id.ivDetailFoto)
         val tvNama = dialogView.findViewById<TextView>(R.id.tvDetailNama)
@@ -404,26 +406,29 @@ class MainActivity : AppCompatActivity() {
         tvHobi.text = ": ${if (!student.hobi.isNullOrEmpty()) student.hobi else "-"}"
         tvCitaCita.text = ": ${if (!student.citaCita.isNullOrEmpty()) student.citaCita else "-"}"
 
-        val cleanBase = if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
-            "https://$baseUrl"
-        } else {
-            baseUrl
-        }.trimEnd('/')
-
         val rawPath = student.foto ?: ""
-
         if (rawPath.isNotBlank()) {
-            val trimmedPath = rawPath.trim()
-            val finalUrl = when {
-                trimmedPath.startsWith("http://") || trimmedPath.startsWith("https://") -> trimmedPath
-                else -> {
-                    val fileName = trimmedPath.substringAfterLast('/')
-                    "$cleanBase/uploads/${Uri.encode(fileName)}"
-                }
-            }
+            val cleanBase = if (!baseUrl.startsWith("http")) "https://$baseUrl" else baseUrl
+            val fileName = rawPath.trim().substringAfterLast('/')
+            val finalUrl = "${cleanBase.trimEnd('/')}/public/uploads/$fileName"
+
+                    val rawPath = student.foto ?: ""
+        if (rawPath.isNotBlank()) {
+            val cleanBase = if (!baseUrl.startsWith("http")) "https://$baseUrl" else baseUrl
+            val fileName = rawPath.trim().substringAfterLast('/')
+            val finalUrl = "${cleanBase.trimEnd('/')}/public/uploads/$fileName"
+
+                    val rawPath = student.foto ?: ""
+        if (rawPath.isNotBlank()) {
+            val cleanBase = if (!baseUrl.startsWith("http")) "https://$baseUrl" else baseUrl
+            val fileName = rawPath.trim().substringAfterLast('/')
+            val finalUrl = "${cleanBase.trimEnd('/')}/public/uploads/$fileName"
 
             ivFoto.load(finalUrl) {
                 crossfade(true)
+                size(200, 200)
+                scale(coil.size.Scale.FILL)
+                allowHardware(false)
                 transformations(CircleCropTransformation())
                 placeholder(android.R.drawable.ic_menu_gallery)
                 error(android.R.drawable.ic_menu_report_image)
@@ -438,7 +443,11 @@ class MainActivity : AppCompatActivity() {
 
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
-            setDimAmount(0.6f)
+            setDimAmount(0.7f) 
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                attributes.blurBehindRadius = 25
+            }
         }
 
         btnClose.setOnClickListener { dialog.dismiss() }
@@ -462,7 +471,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-private fun getFileFromUri(uri: Uri): File? {
+    private fun getFileFromUri(uri: Uri): File? {
         return try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
             val tempFile = File.createTempFile("upload_", ".jpg", cacheDir)
