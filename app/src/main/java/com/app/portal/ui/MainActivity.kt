@@ -27,6 +27,7 @@ import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody.Companion.asRequestBody // <-- Tambahkan baris ini
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -346,7 +347,7 @@ class MainActivity : AppCompatActivity() {
             val file = getFileFromUri(uri)
             if (file != null && file.exists()) {
                 val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
-                val reqFile = file.toRequestBody(mimeType.toMediaTypeOrNull())
+                val reqFile = file.asRequestBody(mimeType.toMediaTypeOrNull())
                 photoPart = MultipartBody.Part.createFormData("foto", file.name, reqFile)
             }
         }
