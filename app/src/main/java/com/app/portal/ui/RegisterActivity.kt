@@ -153,9 +153,9 @@ class RegisterActivity : Activity() {
                 }
 
                 val jsonBody = JSONObject().apply {
-                    put("username", username)
-                    put("password", password)
-                    put("role", "USER")
+                      put("username", username)
+                      put("password", password)
+                      put("role", "user") // Ubah dari "USER" menjadi "user"
                 }
 
                 OutputStreamWriter(conn.outputStream).use { it.write(jsonBody.toString()) }
